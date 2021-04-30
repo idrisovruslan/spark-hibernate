@@ -21,18 +21,48 @@ import static ru.idrisov.utils.TableUtils.*;
 @AllArgsConstructor
 //TODO удалить Dataset<Row> sourceDf = sourcesDFs.get("first_src_schema@src");
 public class NewUniversalProcessor {
+
     ApplicationContext applicationContext;
     SparkSession sparkSession;
+
     public void fillTable(TargetTable targetTable) {
 
-        Map<String, Dataset<Row>> sourcesDFs = new HashMap<>();
+        Map<String, Dataset<Row>> sourceDfs = getSourceDfsMap(targetTable);
+
+        List<Column> columnsForSelect = getColumnsForSelect(targetTable);
+
+        Dataset<Row> sourceDf = sourceDfs.get("first_src_schema@src");
+
+        sourceDf.show();
+
+        Dataset<Row> targetDf = sourceDf
+                .select(
+                        columnsForSelect.toArray(new Column[0])
+                );
+
+        targetDf.show();
+
+    }
+
+    private Map<String, Dataset<Row>> getSourceDfsMap(TargetTable targetTable) {
+        Map<String, Dataset<Row>> sourcesDfs = new HashMap<>();
         for (Class<? extends TableSpark> clazz: getSourceTables(targetTable)) {
             String tableAliasName = getTableAliasName(clazz);
 
             Dataset<Row> sourceDf = readTable(sparkSession, applicationContext.getBean(clazz)).alias(tableAliasName);
-            sourcesDFs.put(tableAliasName, sourceDf);
+            sourcesDfs.put(tableAliasName, sourceDf);
         }
+        return sourcesDfs;
+    }
 
+    private Set<Class<? extends TableSpark>> getSourceTables(TargetTable targetTable) {
+        Set<Class<? extends TableSpark>> set = new HashSet<>();
+        Arrays.stream(targetTable.getClass().getDeclaredFields())
+                .forEach(field -> set.add(field.getAnnotation(SourceTableField.class).sourceTable()));
+        return set;
+    }
+
+    private List<Column> getColumnsForSelect(TargetTable targetTable) {
         List<Column> listForSelect = new ArrayList<>();
 
         for (Field field : targetTable.getClass().getDeclaredFields()) {
@@ -44,23 +74,6 @@ public class NewUniversalProcessor {
             Column col = col(sourceTableName + "." + sourceFieldName).as(targetFieldName);
             listForSelect.add(col);
         }
-
-        Dataset<Row> sourceDf = sourcesDFs.get("first_src_schema@src");
-
-        sourceDf.show();
-
-        Dataset<Row> targetDf = sourceDf
-                .select(
-                        listForSelect.toArray(new Column[0])
-                );
-
-        targetDf.show();
-
-    }
-    private Set<Class<? extends TableSpark>> getSourceTables(TargetTable targetTable) {
-        Set<Class<? extends TableSpark>> set = new HashSet<>();
-        Arrays.stream(targetTable.getClass().getDeclaredFields())
-                .forEach(field -> set.add(field.getAnnotation(SourceTableField.class).sourceTable()));
-        return set;
+        return listForSelect;
     }
 }

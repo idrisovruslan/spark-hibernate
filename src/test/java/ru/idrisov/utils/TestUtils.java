@@ -20,7 +20,6 @@ import static ru.idrisov.utils.TableUtils.getTableFullName;
 
 public class TestUtils {
     private static final String DEFAULT_FORMAT = "hive";
-    private static final String SEPARATOR = ".";
     private static final String DROP_SCHEMA_SQL_PATTERN = "DROP SCHEMA IF EXISTS %s CASCADE";
     private static final String CREATE_SCHEMA_SQL_PATTERN = "CREATE SCHEMA %s";
 
@@ -34,8 +33,8 @@ public class TestUtils {
 
         String[] partitionColumnNames = Arrays.stream(tableSpark.getClass().getDeclaredFields())
                 .filter(declaredField -> {
-                    PartitionField annotation1 = declaredField.getAnnotation(PartitionField.class);
-                    return annotation1 != null;
+                    PartitionField partitionFieldAnnotation = declaredField.getAnnotation(PartitionField.class);
+                    return partitionFieldAnnotation != null;
                 })
                 .map(Field::getName)
                 .toArray(String[]::new);
@@ -51,7 +50,6 @@ public class TestUtils {
 
     public static void recreateAllSchemas(SparkSession sparkSession, TableSpark... tablesSpark) {
         List<String> schemaNames = Stream.of(tablesSpark)
-                //.map(tableToStruct -> tableToStruct.getTable().getSchemaName())
                 .map(tableSpark -> tableSpark.getClass().getAnnotation(EntitySpark.class).tableSchema())
                 .distinct().collect(Collectors.toList());
 
@@ -61,7 +59,7 @@ public class TestUtils {
         });
     }
 
-    public static StructType createTableStruct(TableSpark tableSpark) {
+    private static StructType createTableStruct(TableSpark tableSpark) {
         StructType structType = new StructType();
         for (Field declaredField : tableSpark.getClass().getDeclaredFields()) {
             structType = structType.add(declaredField.getName(), getDataTypeFromJavaType(declaredField.getType()));
@@ -69,12 +67,23 @@ public class TestUtils {
         return structType;
     }
 
+    private static DataType getDataTypeFromJavaType(Class<?> typeField) {
+        if (typeField.equals(String.class)){
+            return DataTypes.StringType;
+        } else if (typeField.equals(Timestamp.class)) {
+            return DataTypes.TimestampType;
+        } else if (typeField.equals(Long.class)) {
+            return DataTypes.LongType;
+        }
+        throw new RuntimeException("Нет такого типа");
+    }
+
     public static Dataset<Row> createRandomSingleRowDf(SparkSession sparkSession, TableSpark tableSpark) {
         StructType schema = createTableStruct(tableSpark);
         return sparkSession.createDataFrame(createRowsList(schema, 1, Collections.emptyMap()), schema);
     }
 
-    public static List<Row> createRowsList(StructType schema, int size, Map<String, Object> fieldValues) {
+    private static List<Row> createRowsList(StructType schema, int size, Map<String, Object> fieldValues) {
         List<Row> result = new ArrayList<>();
         for (int rowNum = 0; rowNum < size; rowNum++) {
             StructField[] fields = schema.fields();
@@ -123,16 +132,5 @@ public class TestUtils {
             throw new RuntimeException("Unsupported dataType in row: " + field.dataType().typeName());
         }
         return value;
-    }
-
-    private static DataType getDataTypeFromJavaType(Class<?> typeField) {
-        if (typeField.equals(String.class)){
-            return DataTypes.StringType;
-        } else if (typeField.equals(Timestamp.class)) {
-            return DataTypes.TimestampType;
-        } else if (typeField.equals(Long.class)) {
-            return DataTypes.LongType;
-        }
-        throw new RuntimeException("Нет такого типа");
     }
 }

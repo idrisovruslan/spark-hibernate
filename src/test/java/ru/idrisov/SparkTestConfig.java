@@ -1,11 +1,14 @@
 package ru.idrisov;
+
 import org.apache.spark.sql.SparkSession;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 
 @SpringBootConfiguration
-@ComponentScan
+@ComponentScan(excludeFilters = {@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = CommandLineRunner.class)})
 public class SparkTestConfig {
 
     @Bean

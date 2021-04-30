@@ -4,17 +4,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.junit.jupiter.api.Test;
-import ru.idrisov.Starter;
+import ru.idrisov.SparkTestConfig;
 import ru.idrisov.domain.entitys.SourceTable;
 import ru.idrisov.domain.entitys.TargetTable;
 
-import static org.apache.spark.sql.functions.lit;
 import static ru.idrisov.utils.TestUtils.*;
 
-@SpringBootTest(classes = {Starter.class})
+@SpringBootTest(classes = SparkTestConfig.class)
 @Slf4j
 class NewProcessorTest {
     @Autowired

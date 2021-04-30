@@ -9,7 +9,7 @@ import ru.idrisov.domain.entitys.TableSpark;
 public class TableUtils {
     private static final String DEFAULT_FORMAT = "hive";
     private static final String SEPARATOR = ".";
-    private static final String ALIAS_SEPARATOR = "_";
+    private static final String ALIAS_SEPARATOR = "@";
 
     public static Dataset<Row> readTable(SparkSession sparkSession, TableSpark tableSpark) {
         return readTable(sparkSession, getTableFullName(tableSpark));

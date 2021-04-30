@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.idrisov.SparkTestConfig;
-import ru.idrisov.domain.entitys.SourceTable;
+import ru.idrisov.domain.entitys.FirstSourceTable;
 import ru.idrisov.domain.entitys.TargetTable;
 
 import static ru.idrisov.utils.TestUtils.*;
@@ -19,7 +19,7 @@ class NewProcessorTest {
     @Autowired
     NewProcessor newProcessor;
     @Autowired
-    SourceTable sourceTable;
+    FirstSourceTable firstSourceTable;
     @Autowired
     TargetTable targetTable;
     @Autowired
@@ -27,10 +27,10 @@ class NewProcessorTest {
 
     @Test
     void sparkExample() {
-        recreateAllSchemas(sparkSession, sourceTable, targetTable);
+        recreateAllSchemas(sparkSession, firstSourceTable, targetTable);
 
-        Dataset<Row> sourceDf = createRandomSingleRowDf(sparkSession, sourceTable);
-        createTable(sourceDf, sourceTable);
+        Dataset<Row> sourceDf = createRandomSingleRowDf(sparkSession, firstSourceTable);
+        createTable(sourceDf, firstSourceTable);
 
         newProcessor.process();
     }

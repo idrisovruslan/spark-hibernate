@@ -19,7 +19,7 @@ import static ru.idrisov.utils.TableUtils.*;
 
 @Service
 @AllArgsConstructor
-//TODO удалить Dataset<Row> sourceDf = sourcesDFs.get("src_schema.src");
+//TODO удалить Dataset<Row> sourceDf = sourcesDFs.get("first_src_schema@src");
 public class NewUniversalProcessor {
     ApplicationContext applicationContext;
     SparkSession sparkSession;
@@ -45,8 +45,7 @@ public class NewUniversalProcessor {
             listForSelect.add(col);
         }
 
-
-        Dataset<Row> sourceDf = sourcesDFs.get("src_schema_src");
+        Dataset<Row> sourceDf = sourcesDFs.get("first_src_schema@src");
 
         sourceDf.show();
 

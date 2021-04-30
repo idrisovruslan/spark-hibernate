@@ -7,8 +7,8 @@ import ru.idrisov.domain.annotations.PartitionField;
 import java.sql.Timestamp;
 
 @Component
-@EntitySpark(tableSchema = "src_schema", tableName = "src", filling = false)
-public class SourceTable implements TableSpark{
+@EntitySpark(tableSchema = "first_src_schema", tableName = "src", filling = false)
+public class FirstSourceTable implements TableSpark{
     String src_accnt_sk;
 
     String src_accnt_status_sk;

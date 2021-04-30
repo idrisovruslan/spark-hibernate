@@ -46,18 +46,18 @@ public class NewUniversalProcessor {
 
     private Map<String, Dataset<Row>> getSourceDfsMap(TargetTable targetTable) {
         Map<String, Dataset<Row>> sourcesDfs = new HashMap<>();
-        for (Class<? extends TableSpark> clazz: getSourceTables(targetTable)) {
-            String tableAliasName = getTableAliasName(clazz);
-
-            Dataset<Row> sourceDf = readTable(sparkSession, applicationContext.getBean(clazz)).alias(tableAliasName);
+        getSourceTables(targetTable).forEach(tableSparkClass -> {
+            String tableAliasName = getTableAliasName(tableSparkClass);
+            Dataset<Row> sourceDf = readTable(sparkSession, applicationContext.getBean(tableSparkClass)).alias(tableAliasName);
             sourcesDfs.put(tableAliasName, sourceDf);
-        }
+        });
         return sourcesDfs;
     }
 
     private Set<Class<? extends TableSpark>> getSourceTables(TargetTable targetTable) {
         Set<Class<? extends TableSpark>> set = new HashSet<>();
         Arrays.stream(targetTable.getClass().getDeclaredFields())
+                .filter(field -> field.isAnnotationPresent(SourceTableField.class))
                 .forEach(field -> set.add(field.getAnnotation(SourceTableField.class).sourceTable()));
         return set;
     }
@@ -65,15 +65,17 @@ public class NewUniversalProcessor {
     private List<Column> getColumnsForSelect(TargetTable targetTable) {
         List<Column> listForSelect = new ArrayList<>();
 
-        for (Field field : targetTable.getClass().getDeclaredFields()) {
-            SourceTableField sourceTableInfo = field.getAnnotation(SourceTableField.class);
-            String sourceTableName = getTableAliasName(sourceTableInfo.sourceTable());
-            String sourceFieldName = sourceTableInfo.sourceFieldName();
-            String targetFieldName = field.getName();
+        Arrays.stream(targetTable.getClass().getDeclaredFields())
+                .filter(field -> field.isAnnotationPresent(SourceTableField.class))
+                .forEach(field -> {
+                    SourceTableField sourceTableInfo = field.getAnnotation(SourceTableField.class);
+                    String sourceTableName = getTableAliasName(sourceTableInfo.sourceTable());
+                    String sourceFieldName = sourceTableInfo.sourceFieldName();
+                    String targetFieldName = field.getName();
 
-            Column col = col(sourceTableName + "." + sourceFieldName).as(targetFieldName);
-            listForSelect.add(col);
-        }
+                    Column col = col(sourceTableName + "." + sourceFieldName).as(targetFieldName);
+                    listForSelect.add(col);
+                });
         return listForSelect;
     }
 }

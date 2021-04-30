@@ -1,7 +1,6 @@
 package ru.idrisov.datamart;
 
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.idrisov.domain.entitys.TargetTable;
 

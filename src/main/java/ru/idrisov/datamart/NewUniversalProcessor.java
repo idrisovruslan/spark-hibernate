@@ -1,16 +1,13 @@
 package ru.idrisov.datamart;
 
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.apache.spark.sql.Column;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
-import ru.idrisov.annotations.SourceTableField;
-import ru.idrisov.domain.entitys.SourceTable;
+import ru.idrisov.domain.annotations.SourceTableField;
 import ru.idrisov.domain.entitys.TableSpark;
 import ru.idrisov.domain.entitys.TargetTable;
 
@@ -51,14 +48,10 @@ public class NewUniversalProcessor {
 
         Dataset<Row> sourceDf = sourcesDFs.get("src_schema_src");
 
-        listForSelect.forEach(System.out::println);
-
         sourceDf.show();
 
         Dataset<Row> targetDf = sourceDf
                 .select(
-//                        col("src_schema_src.src_accnt_sk").as("accnt_sk"),
-//                        col("src_schema_src.src_accnt_status_sk").as("accnt_status_sk")
                         listForSelect.toArray(new Column[0])
                 );
 

@@ -4,8 +4,8 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.apache.spark.sql.*;
 import org.apache.spark.sql.types.*;
 import ru.idrisov.domain.entitys.TableSpark;
-import ru.idrisov.annotations.EntitySpark;
-import ru.idrisov.annotations.PartitionField;
+import ru.idrisov.domain.annotations.EntitySpark;
+import ru.idrisov.domain.annotations.PartitionField;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;

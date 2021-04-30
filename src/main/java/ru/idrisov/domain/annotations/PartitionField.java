@@ -1,6 +1,4 @@
-package ru.idrisov.annotations;
-
-import ru.idrisov.domain.entitys.TableSpark;
+package ru.idrisov.domain.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -9,7 +7,5 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface SourceTableField {
-    Class<? extends TableSpark> sourceTable();
-    String sourceFieldName();
+public @interface PartitionField {
 }

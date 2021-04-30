@@ -1,8 +1,8 @@
 package ru.idrisov.domain.entitys;
 
 import org.springframework.stereotype.Component;
-import ru.idrisov.annotations.EntitySpark;
-import ru.idrisov.annotations.PartitionField;
+import ru.idrisov.domain.annotations.EntitySpark;
+import ru.idrisov.domain.annotations.PartitionField;
 
 import java.sql.Timestamp;
 

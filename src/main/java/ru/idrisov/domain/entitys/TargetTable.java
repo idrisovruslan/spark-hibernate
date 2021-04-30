@@ -2,9 +2,9 @@ package ru.idrisov.domain.entitys;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.idrisov.annotations.EntitySpark;
-import ru.idrisov.annotations.PartitionField;
-import ru.idrisov.annotations.SourceTableField;
+import ru.idrisov.domain.annotations.EntitySpark;
+import ru.idrisov.domain.annotations.PartitionField;
+import ru.idrisov.domain.annotations.SourceTableField;
 
 import java.sql.Timestamp;
 

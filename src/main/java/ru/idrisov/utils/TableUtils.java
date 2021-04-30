@@ -3,7 +3,7 @@ package ru.idrisov.utils;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
-import ru.idrisov.annotations.EntitySpark;
+import ru.idrisov.domain.annotations.EntitySpark;
 import ru.idrisov.domain.entitys.TableSpark;
 
 public class TableUtils {

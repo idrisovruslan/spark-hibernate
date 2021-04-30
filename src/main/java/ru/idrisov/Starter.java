@@ -1,0 +1,28 @@
+package ru.idrisov;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.WebApplicationType;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.gson.GsonAutoConfiguration;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import ru.idrisov.datamart.NewProcessor;
+
+@SpringBootApplication(exclude = {GsonAutoConfiguration.class})
+@RequiredArgsConstructor
+public class Starter implements CommandLineRunner {
+
+    @Autowired
+    NewProcessor newProcessor;
+
+    public static void main(String[] args) {
+        new SpringApplicationBuilder(Starter.class)
+                .run(args);
+    }
+
+    @Override
+    public void run(String... args) {
+
+    }
+}

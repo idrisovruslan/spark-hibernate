@@ -10,10 +10,11 @@ import java.sql.Timestamp;
 @Component
 @EntitySpark(tableSchema = "target_schema", tableName = "target", filling = true)
 @Joins(joins = {
-        @Join(type = JoinTypes.LEFT,
+        @Join(joinType = JoinTypes.LEFT,
                 mainTable = FirstSourceTable.class,
                 joinedTable = SecondSourceTable.class,
-                joinCondition = {@JoinCondition(mainTableField = "src_accnt_sk", joinedField = "src_second_field")})
+                joinCondition = {@JoinCondition(mainTableField = "src_accnt_sk", joinedTableField = "src_second_field")}
+                )
 })
 public class TargetTable implements TableSpark{
 

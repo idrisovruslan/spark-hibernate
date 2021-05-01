@@ -7,10 +7,7 @@ import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
-import ru.idrisov.domain.annotations.WhereCondition;
-import ru.idrisov.domain.annotations.Join;
-import ru.idrisov.domain.annotations.Joins;
-import ru.idrisov.domain.annotations.SourceTableField;
+import ru.idrisov.domain.annotations.*;
 import ru.idrisov.domain.entitys.TableSpark;
 import ru.idrisov.domain.entitys.TargetTable;
 import ru.idrisov.domain.enums.WherePlaces;
@@ -33,7 +30,6 @@ public class NewUniversalProcessor {
         Map<String, Dataset<Row>> sourceDfs = getSourceDfsMap(targetTable);
 
         Dataset<Row> mainSourceDf = getMainSourceDf(targetTable, sourceDfs);
-        mainSourceDf.show();
 
         Dataset<Row> targetDf = getTargetDfWithWhereBeforeJoin(targetTable, mainSourceDf);
 
@@ -43,9 +39,7 @@ public class NewUniversalProcessor {
 
         targetDf = getResultTargetDf(targetTable, targetDf);
 
-        targetDf.show();
         saveAsTable(targetDf, targetTable);
-
     }
 
     private Map<String, Dataset<Row>> getSourceDfsMap(TargetTable targetTable) {
@@ -76,7 +70,7 @@ public class NewUniversalProcessor {
 
     private Dataset<Row> getTargetDfWithWhere(TargetTable targetTable, Dataset<Row> currentDf, WherePlaces place) {
         List<Column> columnsForWhereBeforeJoin = getColumnsForWhere(targetTable, place);
-        Column columnForPreWhere = getColumnForWhere(columnsForWhereBeforeJoin);
+        Column columnForPreWhere = getColumnFromColumnsList(columnsForWhereBeforeJoin);
 
         currentDf = currentDf
                 .where(
@@ -86,16 +80,31 @@ public class NewUniversalProcessor {
     }
 
     private Dataset<Row> getTargetDfWithJoins(TargetTable targetTable, Map<String, Dataset<Row>> sourceDfs, Dataset<Row> currentDf) {
-        List<Column> columnsForJoin = getColumnsForJoin(targetTable);
-        Column columnForJoin = getColumnForJoin(columnsForJoin);
+        for (Join join : targetTable.getClass().getAnnotation(Joins.class).joins()) {
 
-        currentDf = currentDf
-                //TODO удалить sourceDfs.get("second_src_schema@src")
-                .join(sourceDfs.get("second_src_schema@src"),
-                        columnForJoin,
-                        "left"
-                );
+            List<Column> columnsForJoin = getColumnsForJoin(join);
+            Column columnForJoin = getColumnFromColumnsList(columnsForJoin);
+
+            currentDf = currentDf
+                    .join(sourceDfs.get(getTableAliasName(join.joinedTable())),
+                            columnForJoin,
+                            join.joinType().getJoinType()
+                    );
+        }
+
         return currentDf;
+    }
+
+    private List<Column> getColumnsForJoin(Join join) {
+        List<Column> columnsForPreWhere = new ArrayList<>();
+
+        Arrays.stream(join.joinCondition())
+                .forEach(joinCondition -> {
+                    Column conditionColumn = col(getColumnName(join.mainTable(), joinCondition.mainTableField()))
+                            .equalTo(col(getColumnName(join.joinedTable(), joinCondition.joinedTableField())));
+                    columnsForPreWhere.add(conditionColumn);
+                });
+        return columnsForPreWhere;
     }
 
     private Dataset<Row> getResultTargetDf(TargetTable targetTable, Dataset<Row> currentDf) {
@@ -134,14 +143,14 @@ public class NewUniversalProcessor {
         return columnsForPreWhere;
     }
 
-    private Column getColumnForWhere(List<Column> columnsForWhere) {
+    private Column getColumnFromColumnsList(List<Column> columnsList) {
         Column resultColumn = lit("1").equalTo("1");
 
-        if(columnsForWhere.isEmpty()){
+        if(columnsList.isEmpty()){
             return resultColumn;
         }
         //TODO Реализовать поддержку or
-        for(Column column : columnsForWhere) {
+        for (Column column : columnsList) {
             resultColumn = resultColumn.and(column);
         }
 
@@ -167,6 +176,24 @@ public class NewUniversalProcessor {
         String sourceTableName = getTableAliasName(sourceTableInfo.sourceTable());
         String sourceFieldName = sourceTableInfo.sourceFieldName();
         return sourceTableName + "." + sourceFieldName;
+    }
+
+    private String getColumnName(Class<? extends TableSpark> tableSpark, String fieldName) {
+        String sourceTableName = getTableAliasName(tableSpark);
+        return sourceTableName + "." + fieldName;
+    }
+
+    private Class<? extends TableSpark> getMainSourceTableClass(TargetTable targetTable) {
+
+        Set<Class<? extends TableSpark>> sourceTables = getSourceTables(targetTable);
+
+        Class<? extends TableSpark> mainSourceTable = sourceTables.iterator().next();
+
+        if (sourceTables.size() > 1) {
+            mainSourceTable = targetTable.getClass().getAnnotation(Joins.class).joins()[0].mainTable();
+        }
+
+        return mainSourceTable;
     }
 
     private Dataset<Row> getMainSourceDf(TargetTable targetTable, Map<String, Dataset<Row>> sourceDfs) {

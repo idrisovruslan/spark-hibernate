@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({})
 public @interface Join {
-    JoinTypes type() default JoinTypes.LEFT;
+    JoinTypes joinType() default JoinTypes.LEFT;
     Class<? extends TableSpark> mainTable();
     Class<? extends TableSpark> joinedTable();
     JoinCondition[] joinCondition() default {};

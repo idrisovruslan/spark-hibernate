@@ -9,4 +9,6 @@ import ru.idrisov.domain.annotations.PartitionField;
 public class SecondSourceTable implements TableSpark{
     @PartitionField
     String src_second_field;
+
+    String src_second_field_two;
 }

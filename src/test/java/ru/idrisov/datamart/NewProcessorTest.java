@@ -36,7 +36,7 @@ class NewProcessorTest {
 
     @Test
     void sparkExample() {
-        recreateAllSchemas(sparkSession, firstSourceTable, targetTable);
+        recreateAllSchemas(sparkSession, firstSourceTable, secondSourceTable, targetTable);
 
         Dataset<Row> sourceDf1 = createRandomSingleRowDf(sparkSession, firstSourceTable)
                 .withColumn("src_accnt_lvl_1_code", lit("0409301"))
@@ -60,9 +60,14 @@ class NewProcessorTest {
         newProcessor.process();
 
 
-        Dataset<Row> sourceDfAfter = readTable(sparkSession, firstSourceTable);
-        assertEquals(sourceDfAfter.count(), 3);
+        Dataset<Row> sourceDf1After = readTable(sparkSession, firstSourceTable);
+        sourceDf1After.show();
+        assertEquals(sourceDf1After.count(), 3);
+        Dataset<Row> sourceDf2After = readTable(sparkSession, secondSourceTable);
+        sourceDf2After.show();
+        assertEquals(sourceDf2After.count(), 1);
         Dataset<Row> targetDf = readTable(sparkSession, targetTable);
+        targetDf.show();
         assertEquals(targetDf.count(), 2);
     }
 }

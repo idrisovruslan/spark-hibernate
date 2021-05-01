@@ -9,5 +9,5 @@ import java.lang.annotation.Target;
 public @interface JoinCondition {
     String type() default "equalTo";
     String mainTableField();
-    String joinedField();
+    String joinedTableField();
 }

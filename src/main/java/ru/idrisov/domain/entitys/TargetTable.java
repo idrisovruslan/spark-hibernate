@@ -29,14 +29,14 @@ public class TargetTable implements TableSpark{
 
     @PartitionField
     @SourceTableField(sourceTable = FirstSourceTable.class, sourceFieldName = "src_accnt_lvl_1_code",
-            conditions = {@WhereCondition(type = "equalTo", value = "0409301", place = WherePlaces.AFTER)})
+            conditions = {@WhereCondition(type = "equalTo", value = "0409301", place = WherePlaces.AFTER_JOIN)})
     String accnt_lvl_1_code;
 
     @SourceTableField(sourceTable = FirstSourceTable.class, sourceFieldName = "src_user_name")
     String user_name;
 
 //    @SourceTableField(sourceTable = FirstSourceTable.class, sourceFieldName = "src_create_date",
-//            conditions = {@Condition(type = "equalTo", value = "current_timestamp()", valueType = "Column", place = WhereTypes.BEFORE)})
+//            conditions = {@Condition(type = "equalTo", value = "current_timestamp()", valueType = "Column", place = WhereTypes.BEFORE_JOIN)})
 //    Timestamp create_date;
 
     @SourceTableField(sourceTable = FirstSourceTable.class, sourceFieldName = "src_ctl_loading")

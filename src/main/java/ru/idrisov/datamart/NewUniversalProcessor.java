@@ -61,11 +61,11 @@ public class NewUniversalProcessor {
     }
 
     private Dataset<Row> getTargetDfWithWhereBeforeJoin(TargetTable targetTable, Dataset<Row> currentDf) {
-        return getTargetDfWithWhere(targetTable, currentDf, WherePlaces.BEFORE);
+        return getTargetDfWithWhere(targetTable, currentDf, WherePlaces.BEFORE_JOIN);
     }
 
     private Dataset<Row> getTargetDfWithWhereAfterJoin(TargetTable targetTable, Dataset<Row> currentDf) {
-        return getTargetDfWithWhere(targetTable, currentDf, WherePlaces.AFTER);
+        return getTargetDfWithWhere(targetTable, currentDf, WherePlaces.AFTER_JOIN);
     }
 
     private Dataset<Row> getTargetDfWithWhere(TargetTable targetTable, Dataset<Row> currentDf, WherePlaces place) {

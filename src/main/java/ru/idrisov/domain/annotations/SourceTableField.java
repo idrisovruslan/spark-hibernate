@@ -1,6 +1,5 @@
 package ru.idrisov.domain.annotations;
 
-import org.springframework.context.annotation.ComponentScan;
 import ru.idrisov.domain.entitys.TableSpark;
 
 import java.lang.annotation.ElementType;
@@ -13,5 +12,5 @@ import java.lang.annotation.Target;
 public @interface SourceTableField {
     Class<? extends TableSpark> sourceTable();
     String sourceFieldName();
-    Condition[] conditions() default {};
+    WhereCondition[] conditions() default {};
 }

@@ -7,16 +7,18 @@ import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
-import ru.idrisov.domain.annotations.Condition;
+import ru.idrisov.domain.annotations.WhereCondition;
+import ru.idrisov.domain.annotations.Join;
+import ru.idrisov.domain.annotations.Joins;
 import ru.idrisov.domain.annotations.SourceTableField;
 import ru.idrisov.domain.entitys.TableSpark;
 import ru.idrisov.domain.entitys.TargetTable;
+import ru.idrisov.domain.enums.WherePlaces;
 
 import java.util.*;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
-import static org.apache.spark.sql.functions.*;
+import static org.apache.spark.sql.functions.col;
+import static org.apache.spark.sql.functions.lit;
 import static ru.idrisov.utils.TableUtils.*;
 
 @Service
@@ -30,37 +32,16 @@ public class NewUniversalProcessor {
 
         Map<String, Dataset<Row>> sourceDfs = getSourceDfsMap(targetTable);
 
-        List<Column> columnsForWhereBeforeJoin = getColumnsForWhere(targetTable, "Before");
-        Column columnForPreWhere = getColumnForWhere(columnsForWhereBeforeJoin);
+        Dataset<Row> mainSourceDf = getMainSourceDf(targetTable, sourceDfs);
+        mainSourceDf.show();
 
-//        List<Column> columnsForJoin = getColumnsForJoin(targetTable);
-//        Column columnForJoin = getColumnForJoin(columnsForJoin);
+        Dataset<Row> targetDf = getTargetDfWithWhereBeforeJoin(targetTable, mainSourceDf);
 
-        List<Column> columnsForWhereAfterJoin = getColumnsForWhere(targetTable, "After");
-        Column columnForPostWhere = getColumnForWhere(columnsForWhereAfterJoin);
+        targetDf = getTargetDfWithJoins(targetTable, sourceDfs, targetDf);
 
-        List<Column> columnsForSelect = getColumnsForSelect(targetTable);
+        targetDf = getTargetDfWithWhereAfterJoin(targetTable, targetDf);
 
-        //TODO удалить sourceDfs.get("first_src_schema@src")
-        Dataset<Row> sourceDf = sourceDfs.get("first_src_schema@src");
-
-        sourceDf.show();
-
-        Dataset<Row> targetDf = sourceDf
-                .where(
-                        columnForPreWhere
-                )
-                //TODO удалить sourceDfs.get("first_src_schema@src")
-//                .join(sourceDfs.get("first_src_schema@src"),
-//                        columnForJoin,
-//                        "left"
-//                )
-                .where(
-                        columnForPostWhere
-                )
-                .select(
-                        columnsForSelect.toArray(new Column[0])
-                );
+        targetDf = getResultTargetDf(targetTable, targetDf);
 
         targetDf.show();
         saveAsTable(targetDf, targetTable);
@@ -85,7 +66,48 @@ public class NewUniversalProcessor {
         return set;
     }
 
-    private List<Column> getColumnsForWhere(TargetTable targetTable, String place) {
+    private Dataset<Row> getTargetDfWithWhereBeforeJoin(TargetTable targetTable, Dataset<Row> currentDf) {
+        return getTargetDfWithWhere(targetTable, currentDf, WherePlaces.BEFORE);
+    }
+
+    private Dataset<Row> getTargetDfWithWhereAfterJoin(TargetTable targetTable, Dataset<Row> currentDf) {
+        return getTargetDfWithWhere(targetTable, currentDf, WherePlaces.AFTER);
+    }
+
+    private Dataset<Row> getTargetDfWithWhere(TargetTable targetTable, Dataset<Row> currentDf, WherePlaces place) {
+        List<Column> columnsForWhereBeforeJoin = getColumnsForWhere(targetTable, place);
+        Column columnForPreWhere = getColumnForWhere(columnsForWhereBeforeJoin);
+
+        currentDf = currentDf
+                .where(
+                        columnForPreWhere
+                );
+        return currentDf;
+    }
+
+    private Dataset<Row> getTargetDfWithJoins(TargetTable targetTable, Map<String, Dataset<Row>> sourceDfs, Dataset<Row> currentDf) {
+        List<Column> columnsForJoin = getColumnsForJoin(targetTable);
+        Column columnForJoin = getColumnForJoin(columnsForJoin);
+
+        currentDf = currentDf
+                //TODO удалить sourceDfs.get("second_src_schema@src")
+                .join(sourceDfs.get("second_src_schema@src"),
+                        columnForJoin,
+                        "left"
+                );
+        return currentDf;
+    }
+
+    private Dataset<Row> getResultTargetDf(TargetTable targetTable, Dataset<Row> currentDf) {
+        List<Column> columnsForSelect = getColumnsForSelect(targetTable);
+        currentDf = currentDf
+                .select(
+                        columnsForSelect.toArray(new Column[0])
+                );
+        return currentDf;
+    }
+
+    private List<Column> getColumnsForWhere(TargetTable targetTable, WherePlaces place) {
         List<Column> columnsForPreWhere = new ArrayList<>();
 
         Arrays.stream(targetTable.getClass().getDeclaredFields())
@@ -93,27 +115,24 @@ public class NewUniversalProcessor {
                 .filter(field -> {
                     SourceTableField sourceTableInfo = field.getAnnotation(SourceTableField.class);
                     return Arrays.stream(sourceTableInfo.conditions())
-                            .anyMatch(condition -> condition.place().equals(place));
+                            .anyMatch(whereCondition -> whereCondition.place().equals(place));
                 })
                 .forEach(field -> {
                     SourceTableField sourceTableInfo = field.getAnnotation(SourceTableField.class);
-                    Class<? extends TableSpark> sourceTable = sourceTableInfo.sourceTable();
-                    String sourceFieldName = sourceTableInfo.sourceFieldName();
-                    Condition[] conditions = sourceTableInfo.conditions();
+                    WhereCondition[] whereConditions = sourceTableInfo.conditions();
 
-                    Arrays.stream(conditions).forEach(condition -> {
+                    Arrays.stream(whereConditions).forEach(whereCondition -> {
                         //TODO Добавить проверку типа сравнения (equalTo,isin,isNull,leq,lt,geq,gt)
                         //TODO Добавить возможность сравнения с колонками(проверить поле type)
 
 
-                        Column col = col(getColumnName(sourceTableInfo)).equalTo(condition.value());
+                        Column col = col(getColumnName(sourceTableInfo)).equalTo(whereCondition.value());
                         columnsForPreWhere.add(col);
                     });
                 });
 
         return columnsForPreWhere;
     }
-
 
     private Column getColumnForWhere(List<Column> columnsForWhere) {
         Column resultColumn = lit("1").equalTo("1");
@@ -148,5 +167,15 @@ public class NewUniversalProcessor {
         String sourceTableName = getTableAliasName(sourceTableInfo.sourceTable());
         String sourceFieldName = sourceTableInfo.sourceFieldName();
         return sourceTableName + "." + sourceFieldName;
+    }
+
+    private Dataset<Row> getMainSourceDf(TargetTable targetTable, Map<String, Dataset<Row>> sourceDfs) {
+        Dataset<Row> sourceDf = sourceDfs.get(sourceDfs.keySet().iterator().next());
+
+        if (sourceDfs.keySet().size() > 1) {
+            Join[] joins = targetTable.getClass().getAnnotation(Joins.class).joins();
+            sourceDf = sourceDfs.get(getTableAliasName(joins[0].mainTable()));
+        }
+        return sourceDf;
     }
 }

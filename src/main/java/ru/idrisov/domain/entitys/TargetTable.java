@@ -2,8 +2,9 @@ package ru.idrisov.domain.entitys;
 
 import org.springframework.stereotype.Component;
 import ru.idrisov.domain.annotations.*;
+import ru.idrisov.domain.enums.ConditionType;
 import ru.idrisov.domain.enums.JoinTypes;
-import ru.idrisov.domain.enums.WherePlaces;
+import ru.idrisov.domain.enums.WherePlace;
 
 import java.sql.Timestamp;
 
@@ -29,7 +30,7 @@ public class TargetTable implements TableSpark{
 
     @PartitionField
     @SourceTableField(sourceTable = FirstSourceTable.class, sourceFieldName = "src_accnt_lvl_1_code",
-            conditions = {@WhereCondition(type = "equalTo", value = "0409301", place = WherePlaces.AFTER_JOIN)})
+            conditions = {@WhereCondition(type = ConditionType.EQUAL_TO, value = "0409301", place = WherePlace.AFTER_JOIN)})
     String accnt_lvl_1_code;
 
     @SourceTableField(sourceTable = FirstSourceTable.class, sourceFieldName = "src_user_name")

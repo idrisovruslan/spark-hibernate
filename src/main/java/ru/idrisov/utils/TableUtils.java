@@ -6,6 +6,7 @@ import org.apache.spark.sql.SaveMode;
 import org.apache.spark.sql.SparkSession;
 import ru.idrisov.domain.annotations.EntitySpark;
 import ru.idrisov.domain.annotations.PartitionField;
+import ru.idrisov.domain.annotations.SourceTableField;
 import ru.idrisov.domain.entitys.TableSpark;
 
 import java.lang.reflect.Field;
@@ -61,5 +62,14 @@ public class TableUtils {
     private static String getTableFullName(Class<? extends TableSpark> tableSparkClass, String separator) {
         EntitySpark annotation = tableSparkClass.getAnnotation(EntitySpark.class);
         return annotation.tableSchema() + separator +  annotation.tableName();
+    }
+
+    public static String getColumnName(SourceTableField sourceTableInfo) {
+        return getColumnName(sourceTableInfo.sourceTable(), sourceTableInfo.sourceFieldName());
+    }
+
+    public static String getColumnName(Class<? extends TableSpark> tableSpark, String fieldName) {
+        String sourceTableName = getTableAliasName(tableSpark);
+        return sourceTableName + "." + fieldName;
     }
 }

@@ -41,6 +41,24 @@ public class DataFrameBuilder {
         return this;
     }
 
+    private Map<String, Dataset<Row>> getSourceDfsMap(TargetTable targetTable) {
+        Map<String, Dataset<Row>> sourcesDfs = new HashMap<>();
+        getSourceTables(targetTable).forEach(tableSparkClass -> {
+            String tableAliasName = getTableAliasName(tableSparkClass);
+            Dataset<Row> sourceDf = readTable(sparkSession, applicationContext.getBean(tableSparkClass)).alias(tableAliasName);
+            sourcesDfs.put(tableAliasName, sourceDf);
+        });
+        return sourcesDfs;
+    }
+
+    private Set<Class<? extends TableSpark>> getSourceTables(TargetTable targetTable) {
+        Set<Class<? extends TableSpark>> set = new HashSet<>();
+        Arrays.stream(targetTable.getClass().getDeclaredFields())
+                .filter(field -> field.isAnnotationPresent(SourceTableField.class))
+                .forEach(field -> set.add(field.getAnnotation(SourceTableField.class).sourceTable()));
+        return set;
+    }
+
     public DataFrameBuilder addToDfWhereConditionBeforeJoin() {
         return addToDfWhereCondition(WherePlace.BEFORE_JOIN);
     }
@@ -92,23 +110,5 @@ public class DataFrameBuilder {
             sourceDf = sourceDfs.get(getTableAliasName(joins[0].mainTable()));
         }
         currentDf = sourceDf;
-    }
-
-    private Map<String, Dataset<Row>> getSourceDfsMap(TargetTable targetTable) {
-        Map<String, Dataset<Row>> sourcesDfs = new HashMap<>();
-        getSourceTables(targetTable).forEach(tableSparkClass -> {
-            String tableAliasName = getTableAliasName(tableSparkClass);
-            Dataset<Row> sourceDf = readTable(sparkSession, applicationContext.getBean(tableSparkClass)).alias(tableAliasName);
-            sourcesDfs.put(tableAliasName, sourceDf);
-        });
-        return sourcesDfs;
-    }
-
-    private Set<Class<? extends TableSpark>> getSourceTables(TargetTable targetTable) {
-        Set<Class<? extends TableSpark>> set = new HashSet<>();
-        Arrays.stream(targetTable.getClass().getDeclaredFields())
-                .filter(field -> field.isAnnotationPresent(SourceTableField.class))
-                .forEach(field -> set.add(field.getAnnotation(SourceTableField.class).sourceTable()));
-        return set;
     }
 }

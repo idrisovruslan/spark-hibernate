@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import ru.idrisov.domain.annotations.*;
 import ru.idrisov.domain.entitys.TableSpark;
 import ru.idrisov.domain.entitys.TargetTable;
-import ru.idrisov.domain.enums.WherePlaces;
+import ru.idrisov.domain.enums.WherePlace;
 
 import java.util.*;
 
@@ -61,14 +61,14 @@ public class NewUniversalProcessor {
     }
 
     private Dataset<Row> getTargetDfWithWhereBeforeJoin(TargetTable targetTable, Dataset<Row> currentDf) {
-        return getTargetDfWithWhere(targetTable, currentDf, WherePlaces.BEFORE_JOIN);
+        return getTargetDfWithWhere(targetTable, currentDf, WherePlace.BEFORE_JOIN);
     }
 
     private Dataset<Row> getTargetDfWithWhereAfterJoin(TargetTable targetTable, Dataset<Row> currentDf) {
-        return getTargetDfWithWhere(targetTable, currentDf, WherePlaces.AFTER_JOIN);
+        return getTargetDfWithWhere(targetTable, currentDf, WherePlace.AFTER_JOIN);
     }
 
-    private Dataset<Row> getTargetDfWithWhere(TargetTable targetTable, Dataset<Row> currentDf, WherePlaces place) {
+    private Dataset<Row> getTargetDfWithWhere(TargetTable targetTable, Dataset<Row> currentDf, WherePlace place) {
         List<Column> columnsForWhereBeforeJoin = getColumnsForWhere(targetTable, place);
         Column columnForPreWhere = getColumnFromColumnsList(columnsForWhereBeforeJoin);
 
@@ -116,7 +116,7 @@ public class NewUniversalProcessor {
         return currentDf;
     }
 
-    private List<Column> getColumnsForWhere(TargetTable targetTable, WherePlaces place) {
+    private List<Column> getColumnsForWhere(TargetTable targetTable, WherePlace place) {
         List<Column> columnsForPreWhere = new ArrayList<>();
 
         Arrays.stream(targetTable.getClass().getDeclaredFields())

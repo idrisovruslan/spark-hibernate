@@ -6,6 +6,8 @@ import ru.idrisov.domain.annotations.SourceTableField;
 import ru.idrisov.domain.annotations.WhereCondition;
 import ru.idrisov.domain.enums.ColumnValue;
 
+import java.util.Arrays;
+
 import static org.apache.spark.sql.functions.col;
 import static org.apache.spark.sql.functions.current_timestamp;
 import static ru.idrisov.utils.TableUtils.getColumnName;
@@ -22,7 +24,9 @@ public class ColumnWithExpressionCreator {
     }
 
     private boolean rightValueIsEmpty(WhereCondition whereCondition) {
-        return whereCondition.stringRightValue().equals("") && whereCondition.columnRightValue().equals(ColumnValue.none);
+        return whereCondition.stringRightValue().equals("")
+                && whereCondition.columnRightValue().equals(ColumnValue.none)
+                && whereCondition.arrayStringRightValue().length == 0;
     }
 
     public Column getColumnWithExpressionWithoutValue(SourceTableField sourceTableInfo, WhereCondition whereCondition) {
@@ -47,6 +51,8 @@ public class ColumnWithExpressionCreator {
                 return col(getColumnName(sourceTableInfo)).geq(rightValue);
             case GT:
                 return col(getColumnName(sourceTableInfo)).gt(rightValue);
+            case IS_IN:
+                return col(getColumnName(sourceTableInfo)).isin(rightValue);
         }
         throw new RuntimeException("Данный тип условия не потдерживается");
     }
@@ -56,6 +62,9 @@ public class ColumnWithExpressionCreator {
 
         if (!whereCondition.columnRightValue().equals(ColumnValue.none)) {
             rightValue = getColumnForColumnValue(whereCondition);
+        }
+        if (whereCondition.arrayStringRightValue().length >= 1) {
+            rightValue = whereCondition.arrayStringRightValue();
         }
         return rightValue;
     }

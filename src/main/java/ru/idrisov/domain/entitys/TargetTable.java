@@ -2,9 +2,7 @@ package ru.idrisov.domain.entitys;
 
 import org.springframework.stereotype.Component;
 import ru.idrisov.domain.annotations.*;
-import ru.idrisov.domain.enums.ConditionType;
-import ru.idrisov.domain.enums.JoinTypes;
-import ru.idrisov.domain.enums.WherePlace;
+import ru.idrisov.domain.enums.*;
 
 import java.sql.Timestamp;
 
@@ -30,15 +28,15 @@ public class TargetTable implements TableSpark{
 
     @PartitionField
     @SourceTableField(sourceTable = FirstSourceTable.class, sourceFieldName = "src_accnt_lvl_1_code",
-            conditions = {@WhereCondition(type = ConditionType.EQUAL_TO, value = "0409301", place = WherePlace.AFTER_JOIN)})
+            conditions = {@WhereCondition(type = ConditionType.EQUAL_TO, stringRightValue = "0409301", place = WherePlace.AFTER_JOIN)})
     String accnt_lvl_1_code;
 
     @SourceTableField(sourceTable = FirstSourceTable.class, sourceFieldName = "src_user_name")
     String user_name;
 
-//    @SourceTableField(sourceTable = FirstSourceTable.class, sourceFieldName = "src_create_date",
-//            conditions = {@Condition(type = "equalTo", value = "current_timestamp()", valueType = "Column", place = WhereTypes.BEFORE_JOIN)})
-//    Timestamp create_date;
+    @SourceTableField(sourceTable = FirstSourceTable.class, sourceFieldName = "src_create_date",
+            conditions = {@WhereCondition(type = ConditionType.LEQ, columnRightValue = ColumnValue.current_timestamp, place = WherePlace.BEFORE_JOIN)})
+    Timestamp create_date;
 
     @SourceTableField(sourceTable = FirstSourceTable.class, sourceFieldName = "src_ctl_loading")
     Long ctl_loading;

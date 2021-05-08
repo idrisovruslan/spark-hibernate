@@ -1,5 +1,6 @@
 package ru.idrisov.domain.annotations;
 
+import ru.idrisov.domain.enums.ColumnValue;
 import ru.idrisov.domain.enums.ConditionType;
 import ru.idrisov.domain.enums.WherePlace;
 
@@ -11,7 +12,7 @@ import java.lang.annotation.Target;
 @Target({})
 public @interface WhereCondition {
     ConditionType type() default ConditionType.EQUAL_TO;
-    String value();
-    String valueType() default "String";
+    String stringRightValue() default "";
+    ColumnValue columnRightValue() default ColumnValue.none;
     WherePlace place();
 }

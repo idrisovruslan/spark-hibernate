@@ -1,5 +1,6 @@
 package ru.idrisov.datamart;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.spark.sql.Column;
 import org.springframework.stereotype.Component;
 import ru.idrisov.domain.annotations.Join;
@@ -17,7 +18,10 @@ import static org.apache.spark.sql.functions.lit;
 import static ru.idrisov.utils.TableUtils.getColumnName;
 
 @Component
+@RequiredArgsConstructor
 public class ColumnCreator {
+
+    final ColumnWithExpressionCreator columnWithExpressionCreator;
 
     public List<Column> getColumnsForWhere(TargetTable targetTable, WherePlace place) {
         List<Column> columnsForPreWhere = new ArrayList<>();
@@ -34,10 +38,7 @@ public class ColumnCreator {
                     WhereCondition[] whereConditions = sourceTableInfo.conditions();
 
                     Arrays.stream(whereConditions).forEach(whereCondition -> {
-                        //TODO Добавить проверку типа сравнения (equalTo,isin,isNull,leq,lt,geq,gt)
-                        //TODO Добавить возможность сравнения с колонками(проверить поле type)
-
-                        Column col = col(getColumnName(sourceTableInfo)).equalTo(whereCondition.value());
+                        Column col = columnWithExpressionCreator.getColumnWithExpression(sourceTableInfo, whereCondition);
                         columnsForPreWhere.add(col);
                     });
                 });
@@ -50,6 +51,7 @@ public class ColumnCreator {
 
         Arrays.stream(join.joinCondition())
                 .forEach(joinCondition -> {
+                    //TODO добавить возможность других проверок условий(если придумаю каких)
                     Column conditionColumn = col(getColumnName(join.mainTable(), joinCondition.mainTableField()))
                             .equalTo(col(getColumnName(join.joinedTable(), joinCondition.joinedTableField())));
                     columnsForPreWhere.add(conditionColumn);

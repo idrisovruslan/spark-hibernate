@@ -6,7 +6,7 @@ import ru.idrisov.domain.entitys.FirstTargetTable;
 
 @Service
 @AllArgsConstructor
-public class NewProcessor implements DatamartProcessor {
+public class FirstNewProcessor implements DatamartProcessor {
 
     NewUniversalProcessor newUniversalProcessor;
     FirstTargetTable firstTargetTable;

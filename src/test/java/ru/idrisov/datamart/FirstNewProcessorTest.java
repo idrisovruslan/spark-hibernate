@@ -20,9 +20,9 @@ import static ru.idrisov.utils.TestUtils.*;
 
 @SpringBootTest(classes = SparkTestConfig.class)
 @Slf4j
-class NewProcessorTest {
+class FirstNewProcessorTest {
     @Autowired
-    NewProcessor newProcessor;
+    FirstNewProcessor firstNewProcessor;
     @Autowired
     FirstSourceTable firstSourceTable;
     @Autowired
@@ -57,7 +57,7 @@ class NewProcessorTest {
         createTable(source2Df, secondSourceTable);
 
 
-        newProcessor.process();
+        firstNewProcessor.process();
 
 
         Dataset<Row> sourceDf1After = readTable(sparkSession, firstSourceTable);

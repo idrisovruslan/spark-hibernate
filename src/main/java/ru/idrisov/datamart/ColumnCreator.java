@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import ru.idrisov.domain.annotations.Join;
 import ru.idrisov.domain.annotations.SourceTableField;
 import ru.idrisov.domain.annotations.WhereCondition;
-import ru.idrisov.domain.entitys.TargetTable;
+import ru.idrisov.domain.entitys.TableSpark;
 import ru.idrisov.domain.enums.WherePlace;
 
 import java.util.ArrayList;
@@ -23,10 +23,10 @@ public class ColumnCreator {
 
     final ColumnWithExpressionCreator columnWithExpressionCreator;
 
-    public List<Column> getColumnsForWhere(TargetTable targetTable, WherePlace place) {
+    public List<Column> getColumnsForWhere(TableSpark secondTargetTable, WherePlace place) {
         List<Column> columnsForPreWhere = new ArrayList<>();
 
-        Arrays.stream(targetTable.getClass().getDeclaredFields())
+        Arrays.stream(secondTargetTable.getClass().getDeclaredFields())
                 .filter(field -> field.isAnnotationPresent(SourceTableField.class))
                 .filter(field -> {
                     SourceTableField sourceTableInfo = field.getAnnotation(SourceTableField.class);
@@ -59,10 +59,10 @@ public class ColumnCreator {
         return columnsForPreWhere;
     }
 
-    public List<Column> getColumnsForSelect(TargetTable targetTable) {
+    public List<Column> getColumnsForSelect(TableSpark secondTargetTable) {
         List<Column> listForSelect = new ArrayList<>();
 
-        Arrays.stream(targetTable.getClass().getDeclaredFields())
+        Arrays.stream(secondTargetTable.getClass().getDeclaredFields())
                 .filter(field -> field.isAnnotationPresent(SourceTableField.class))
                 .forEach(field -> {
                     SourceTableField sourceTableInfo = field.getAnnotation(SourceTableField.class);

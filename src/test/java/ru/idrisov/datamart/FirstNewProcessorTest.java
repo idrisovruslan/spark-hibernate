@@ -35,7 +35,7 @@ class FirstNewProcessorTest {
     NewUniversalProcessor newUniversalProcessor;
 
     @Test
-    void sparkExample() {
+    void defaultTest() {
         recreateAllSchemas(sparkSession, firstSourceTable, secondSourceTable, firstTargetTable);
 
         Dataset<Row> sourceDf1 = createRandomSingleRowDf(sparkSession, firstSourceTable)

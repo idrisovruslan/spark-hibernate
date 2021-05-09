@@ -66,16 +66,16 @@ class SecondNewProcessorTest {
                         "left"
                 )
                 .groupBy(
-                        col("first_src_schema@src.src_accnt_sk").as("first_src_schema@src@src_accnt_sk"),
-                        col("second_src_schema@src.src_second_field_two").as("second_src_schema@src@src_second_field_two")
+                        col("first_src_schema@src.src_accnt_sk").as("first_src_schema@src.src_accnt_sk"),
+                        col("second_src_schema@src.src_second_field_two").as("second_src_schema@src.src_second_field_two")
                 )
                 .agg(
-                        max(col("first_src_schema@src.src_ctl_loading")).as("first_src_schema@src@src_ctl_loading")
+                        max(col("first_src_schema@src.src_ctl_loading")).as("first_src_schema@src.src_ctl_loading")
                 )
                 .select(
-                        col("first_src_schema@src@src_accnt_sk").as("accnt_sk"),
-                        col("first_src_schema@src@src_ctl_loading").as("ctl_loading"),
-                        col("second_src_schema@src@src_second_field_two").as("trg_from_second_table_field")
+                        col("`first_src_schema@src.src_accnt_sk`").as("accnt_sk"),
+                        col("`first_src_schema@src.src_ctl_loading`").as("ctl_loading"),
+                        col("`second_src_schema@src.src_second_field_two`").as("trg_from_second_table_field")
                 );
         res.show();
 

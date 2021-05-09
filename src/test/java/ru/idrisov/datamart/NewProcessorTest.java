@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.idrisov.SparkTestConfig;
 import ru.idrisov.domain.entitys.FirstSourceTable;
+import ru.idrisov.domain.entitys.FirstTargetTable;
 import ru.idrisov.domain.entitys.SecondSourceTable;
-import ru.idrisov.domain.entitys.SecondTargetTable;
 
 import static org.apache.spark.sql.functions.current_timestamp;
 import static org.apache.spark.sql.functions.lit;
@@ -28,7 +28,7 @@ class NewProcessorTest {
     @Autowired
     SecondSourceTable secondSourceTable;
     @Autowired
-    SecondTargetTable secondTargetTable;
+    FirstTargetTable firstTargetTable;
     @Autowired
     SparkSession sparkSession;
     @Autowired
@@ -36,7 +36,7 @@ class NewProcessorTest {
 
     @Test
     void sparkExample() {
-        recreateAllSchemas(sparkSession, firstSourceTable, secondSourceTable, secondTargetTable);
+        recreateAllSchemas(sparkSession, firstSourceTable, secondSourceTable, firstTargetTable);
 
         Dataset<Row> sourceDf1 = createRandomSingleRowDf(sparkSession, firstSourceTable)
                 .withColumn("src_accnt_lvl_1_code", lit("0409301"))
@@ -66,7 +66,7 @@ class NewProcessorTest {
         Dataset<Row> sourceDf2After = readTable(sparkSession, secondSourceTable);
         sourceDf2After.show();
         assertEquals(sourceDf2After.count(), 1);
-        Dataset<Row> targetDf = readTable(sparkSession, secondTargetTable);
+        Dataset<Row> targetDf = readTable(sparkSession, firstTargetTable);
         targetDf.show();
         assertEquals(targetDf.count(), 2);
     }

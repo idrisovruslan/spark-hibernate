@@ -2,18 +2,18 @@ package ru.idrisov.datamart;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.idrisov.domain.entitys.SecondTargetTable;
+import ru.idrisov.domain.entitys.FirstTargetTable;
 
 @Service
 @AllArgsConstructor
 public class NewProcessor implements DatamartProcessor {
 
     NewUniversalProcessor newUniversalProcessor;
-    SecondTargetTable secondTargetTable;
+    FirstTargetTable firstTargetTable;
 
     @Override
     public void process() {
-        newUniversalProcessor.fillTable(secondTargetTable);
+        newUniversalProcessor.fillTable(firstTargetTable);
     }
 
     @Override

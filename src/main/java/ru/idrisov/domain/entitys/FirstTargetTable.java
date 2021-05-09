@@ -1,19 +1,24 @@
 package ru.idrisov.domain.entitys;
 
 import org.springframework.stereotype.Component;
-import ru.idrisov.domain.annotations.EntitySpark;
-import ru.idrisov.domain.annotations.PartitionField;
-import ru.idrisov.domain.annotations.SourceTableField;
-import ru.idrisov.domain.annotations.WhereCondition;
+import ru.idrisov.domain.annotations.*;
 import ru.idrisov.domain.enums.ColumnValue;
 import ru.idrisov.domain.enums.ConditionType;
+import ru.idrisov.domain.enums.JoinTypes;
 import ru.idrisov.domain.enums.WherePlace;
 
 import java.sql.Timestamp;
 
 @Component
-@EntitySpark(tableSchema = "target_schema", tableName = "second_target", filling = true)
-public class SecondTargetTable implements TableSpark{
+@EntitySpark(tableSchema = "target_schema", tableName = "target", filling = true)
+@Joins(joins = {
+        @Join(joinType = JoinTypes.LEFT,
+                mainTable = FirstSourceTable.class,
+                joinedTable = SecondSourceTable.class,
+                joinCondition = {@JoinCondition(mainTableField = "src_accnt_sk", joinedTableField = "src_second_field")}
+                )
+})
+public class FirstTargetTable implements TableSpark{
 
     @SourceTableField(sourceTable = FirstSourceTable.class, sourceFieldName = "src_accnt_sk")
     String accnt_sk;

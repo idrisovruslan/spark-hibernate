@@ -14,13 +14,13 @@ public class NewUniversalProcessor {
 
     final DataFrameBuilder dataFrameBuilder;
 
-    public void fillTable(TableSpark secondTargetTable) {
-        Dataset<Row> targetDf = dataFrameBuilder.initBuilder(secondTargetTable)
+    public void fillTable(TableSpark targetTable) {
+        Dataset<Row> targetDf = dataFrameBuilder.initBuilder(targetTable)
                 .addToDfWhereConditionBeforeJoin()
                 .addToDfJoins()
                 .addToDfWhereConditionAfterJoin()
                 .getResultTargetDf();
 
-        saveAsTable(targetDf, secondTargetTable);
+        saveAsTable(targetDf, targetTable);
     }
 }

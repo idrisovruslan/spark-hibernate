@@ -23,10 +23,10 @@ public class ColumnCreator {
 
     final ColumnWithExpressionCreator columnWithExpressionCreator;
 
-    public List<Column> getColumnsForWhere(TableSpark secondTargetTable, WherePlace place) {
+    public List<Column> getColumnsForWhere(TableSpark targetTable, WherePlace place) {
         List<Column> columnsForPreWhere = new ArrayList<>();
 
-        Arrays.stream(secondTargetTable.getClass().getDeclaredFields())
+        Arrays.stream(targetTable.getClass().getDeclaredFields())
                 .filter(field -> field.isAnnotationPresent(SourceTableField.class))
                 .filter(field -> {
                     SourceTableField sourceTableInfo = field.getAnnotation(SourceTableField.class);
@@ -59,10 +59,10 @@ public class ColumnCreator {
         return columnsForPreWhere;
     }
 
-    public List<Column> getColumnsForSelect(TableSpark secondTargetTable) {
+    public List<Column> getColumnsForSelect(TableSpark targetTable) {
         List<Column> listForSelect = new ArrayList<>();
 
-        Arrays.stream(secondTargetTable.getClass().getDeclaredFields())
+        Arrays.stream(targetTable.getClass().getDeclaredFields())
                 .filter(field -> field.isAnnotationPresent(SourceTableField.class))
                 .forEach(field -> {
                     SourceTableField sourceTableInfo = field.getAnnotation(SourceTableField.class);

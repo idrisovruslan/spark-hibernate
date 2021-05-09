@@ -31,18 +31,18 @@ public class DataFrameBuilder {
 
     private Dataset<Row> currentDf;
     private Map<String, Dataset<Row>> sourceDfs;
-    private TableSpark secondTargetTable;
+    private TableSpark targetTable;
 
-    public DataFrameBuilder initBuilder(TableSpark secondTargetTable) {
-        this.secondTargetTable = secondTargetTable;
-        sourceDfs = getSourceDfsMap(secondTargetTable);
+    public DataFrameBuilder initBuilder(TableSpark targetTable) {
+        this.targetTable = targetTable;
+        sourceDfs = getSourceDfsMap(targetTable);
         getMainSourceDf();
         return this;
     }
 
-    private Map<String, Dataset<Row>> getSourceDfsMap(TableSpark secondTargetTable) {
+    private Map<String, Dataset<Row>> getSourceDfsMap(TableSpark targetTable) {
         Map<String, Dataset<Row>> sourcesDfs = new HashMap<>();
-        getSourceTables(secondTargetTable).forEach(tableSparkClass -> {
+        getSourceTables(targetTable).forEach(tableSparkClass -> {
             String tableAliasName = getTableAliasName(tableSparkClass);
             Dataset<Row> sourceDf = readTable(sparkSession, applicationContext.getBean(tableSparkClass)).alias(tableAliasName);
             sourcesDfs.put(tableAliasName, sourceDf);
@@ -50,9 +50,9 @@ public class DataFrameBuilder {
         return sourcesDfs;
     }
 
-    private Set<Class<? extends TableSpark>> getSourceTables(TableSpark secondTargetTable) {
+    private Set<Class<? extends TableSpark>> getSourceTables(TableSpark targetTable) {
         Set<Class<? extends TableSpark>> set = new HashSet<>();
-        Arrays.stream(secondTargetTable.getClass().getDeclaredFields())
+        Arrays.stream(targetTable.getClass().getDeclaredFields())
                 .filter(field -> field.isAnnotationPresent(SourceTableField.class))
                 .forEach(field -> set.add(field.getAnnotation(SourceTableField.class).sourceTable()));
         return set;
@@ -67,7 +67,7 @@ public class DataFrameBuilder {
     }
 
     private DataFrameBuilder addToDfWhereCondition(WherePlace place) {
-        List<Column> columnsForWhereBeforeJoin = columnCreator.getColumnsForWhere(secondTargetTable, place);
+        List<Column> columnsForWhereBeforeJoin = columnCreator.getColumnsForWhere(targetTable, place);
         Column columnForPreWhere = columnCreator.getColumnFromColumnsList(columnsForWhereBeforeJoin);
 
         currentDf = currentDf
@@ -78,7 +78,7 @@ public class DataFrameBuilder {
     }
 
     public DataFrameBuilder addToDfJoins() {
-        for (Join join : secondTargetTable.getClass().getAnnotation(Joins.class).joins()) {
+        for (Join join : targetTable.getClass().getAnnotation(Joins.class).joins()) {
 
             List<Column> columnsForJoin = columnCreator.getColumnsForJoin(join);
             Column columnForJoin = columnCreator.getColumnFromColumnsList(columnsForJoin);
@@ -93,7 +93,7 @@ public class DataFrameBuilder {
     }
 
     public Dataset<Row> getResultTargetDf() {
-        List<Column> columnsForSelect = columnCreator.getColumnsForSelect(secondTargetTable);
+        List<Column> columnsForSelect = columnCreator.getColumnsForSelect(targetTable);
         currentDf = currentDf
                 .select(
                         columnsForSelect.toArray(new Column[0])
@@ -105,7 +105,7 @@ public class DataFrameBuilder {
         Dataset<Row> sourceDf = sourceDfs.get(sourceDfs.keySet().iterator().next());
 
         if (sourceDfs.keySet().size() > 1) {
-            Join[] joins = secondTargetTable.getClass().getAnnotation(Joins.class).joins();
+            Join[] joins = targetTable.getClass().getAnnotation(Joins.class).joins();
             sourceDf = sourceDfs.get(getTableAliasName(joins[0].mainTable()));
         }
         currentDf = sourceDf;

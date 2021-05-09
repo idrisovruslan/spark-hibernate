@@ -60,24 +60,24 @@ class SecondNewProcessorTest {
         createTable(source2Df, secondSourceTable);
 
 
-        Dataset<Row> res = sourceDf
-                .join(source2Df,
-                        sourceDf.col("src_accnt_sk").equalTo(source2Df.col("src_second_field")),
+        Dataset<Row> res = sourceDf.alias("first_src_schema@src")
+                .join(source2Df.alias("second_src_schema@src"),
+                        col("first_src_schema@src.src_accnt_sk").equalTo(col("second_src_schema@src.src_second_field")),
                         "left"
                 )
                 .groupBy(
-                        sourceDf.col("src_accnt_sk"),
-                        source2Df.col("src_second_field_two")
+                        col("first_src_schema@src.src_accnt_sk").as("first_src_schema@src@src_accnt_sk"),
+                        col("second_src_schema@src.src_second_field_two").as("second_src_schema@src@src_second_field_two")
                 )
                 .agg(
-                        max(sourceDf.col("ctl_loading")).as("ctl_loading")
+                        max(col("first_src_schema@src.src_ctl_loading")).as("first_src_schema@src@src_ctl_loading")
                 )
                 .select(
-                        col("src_accnt_sk").as("accnt_sk"),
-                        col("src_ctl_loading").as("ctl_loading"),
-                        col("src_second_field_two").as("trg_from_second_table_field")
+                        col("first_src_schema@src@src_accnt_sk").as("accnt_sk"),
+                        col("first_src_schema@src@src_ctl_loading").as("ctl_loading"),
+                        col("second_src_schema@src@src_second_field_two").as("trg_from_second_table_field")
                 );
-
+        res.show();
 
         secondNewProcessor.process();
 

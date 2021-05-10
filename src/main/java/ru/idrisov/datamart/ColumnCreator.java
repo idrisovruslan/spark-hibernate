@@ -59,7 +59,7 @@ public class ColumnCreator {
         return columnsForPreWhere;
     }
 
-    public List<Column> getColumnsForSelect(TableSpark targetTable) {
+    public List<Column> getColumnsForSelect(TableSpark targetTable, Boolean aggregated) {
         List<Column> listForSelect = new ArrayList<>();
 
         Arrays.stream(targetTable.getClass().getDeclaredFields())
@@ -68,7 +68,14 @@ public class ColumnCreator {
                     SourceTableField sourceTableInfo = field.getAnnotation(SourceTableField.class);
                     String targetFieldName = field.getName();
 
-                    Column col = col(getColumnName(sourceTableInfo)).as(targetFieldName);
+                    StringBuilder columnName = new StringBuilder(getColumnName(sourceTableInfo));
+                    if (aggregated) {
+                        columnName.insert(0, "`");
+                        columnName.append("`");
+                    }
+
+                    Column col = col(columnName.toString()).as(targetFieldName);
+
                     listForSelect.add(col);
                 });
         return listForSelect;

@@ -9,9 +9,7 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import ru.idrisov.domain.annotations.Join;
-import ru.idrisov.domain.annotations.Joins;
-import ru.idrisov.domain.annotations.SourceTableField;
+import ru.idrisov.domain.annotations.*;
 import ru.idrisov.domain.entitys.TableSpark;
 import ru.idrisov.domain.enums.WherePlace;
 
@@ -32,9 +30,11 @@ public class DataFrameBuilder {
     private Dataset<Row> currentDf;
     private Map<String, Dataset<Row>> sourceDfs;
     private TableSpark targetTable;
+    private Boolean aggregated;
 
     public DataFrameBuilder initBuilder(TableSpark targetTable) {
         this.targetTable = targetTable;
+        aggregated = false;
         sourceDfs = getSourceDfsMap(targetTable);
         getMainSourceDf();
         return this;
@@ -76,6 +76,10 @@ public class DataFrameBuilder {
         return addToDfWhereCondition(WherePlace.AFTER_JOIN);
     }
 
+    public DataFrameBuilder addToDfWhereConditionAfterGroupBy() {
+        return addToDfWhereCondition(WherePlace.AFTER_AGGREGATE);
+    }
+
     private DataFrameBuilder addToDfWhereCondition(WherePlace place) {
         List<Column> columnsForWhereBeforeJoin = columnCreator.getColumnsForWhere(targetTable, place);
         Column columnForPreWhere = columnCreator.getColumnFromColumnsList(columnsForWhereBeforeJoin);
@@ -102,8 +106,65 @@ public class DataFrameBuilder {
         return this;
     }
 
+    public DataFrameBuilder addToDfGroupByWithAggFunctions() {
+        if (Arrays.stream(targetTable.getClass().getDeclaredFields())
+                .noneMatch(field -> (field.isAnnotationPresent(GroupBy.class) && field.isAnnotationPresent(Aggregate.class)))) {
+            return this;
+        }
+
+        List<Column> columnsForGroupBy = columnCreator.getColumnsForGroupBy(targetTable);
+        List<Column> columnsForAgg = columnCreator.getColumnsForAgg(targetTable);
+
+        if (columnsForAgg.size() == 1) {
+            currentDf = currentDf
+                    .groupBy(
+                            columnsForGroupBy.toArray(new Column[0])
+                    )
+                    .agg(
+                            columnsForAgg.remove(0)
+                    );
+        }
+
+        currentDf = currentDf
+                .groupBy(
+                        columnsForGroupBy.toArray(new Column[0])
+                )
+                .agg(
+                        columnsForAgg.remove(0),
+                        columnsForAgg.toArray(new Column[0])
+                );
+
+        aggregated = true;
+        return this;
+    }
+
+    public DataFrameBuilder addToDfAggregateFunctions() {
+        if (Arrays.stream(targetTable.getClass().getDeclaredFields())
+                .noneMatch(field -> field.isAnnotationPresent(Aggregate.class))) {
+            return this;
+        }
+
+        List<Column> columnsForAgg = columnCreator.getColumnsForAgg(targetTable);
+
+        if (columnsForAgg.size() == 1) {
+            currentDf = currentDf
+                    .agg(
+                            columnsForAgg.remove(0)
+                    );
+        }
+
+        currentDf = currentDf
+                .agg(
+                        columnsForAgg.remove(0),
+                        columnsForAgg.toArray(new Column[0])
+                );
+
+        aggregated = true;
+        return this;
+    }
+
     public Dataset<Row> getResultTargetDf() {
-        List<Column> columnsForSelect = columnCreator.getColumnsForSelect(targetTable);
+        List<Column> columnsForSelect = columnCreator.getColumnsForSelect(targetTable, aggregated);
         currentDf = currentDf
                 .select(
                         columnsForSelect.toArray(new Column[0])

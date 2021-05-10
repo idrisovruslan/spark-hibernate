@@ -19,9 +19,9 @@ public class NewUniversalProcessor {
                 .addToDfWhereConditionBeforeJoin()
                 .addToDfJoins()
                 .addToDfWhereConditionAfterJoin()
-                //.addToDfAggregateFunctions()
-                //.addToDfGroupByFunctions()
-                //.addToDfWhereConditionAfterGroupBy()
+                .addToDfAggregateFunctions()
+                .addToDfGroupByWithAggFunctions()
+                .addToDfWhereConditionAfterGroupBy()
                 .getResultTargetDf();
 
         saveAsTable(targetDf, targetTable);

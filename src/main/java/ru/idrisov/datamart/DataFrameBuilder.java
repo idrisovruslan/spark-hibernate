@@ -50,6 +50,16 @@ public class DataFrameBuilder {
         return sourcesDfs;
     }
 
+    private void getMainSourceDf() {
+        Dataset<Row> sourceDf = sourceDfs.get(sourceDfs.keySet().iterator().next());
+
+        if (sourceDfs.keySet().size() > 1) {
+            Join[] joins = targetTable.getClass().getAnnotation(Joins.class).joins();
+            sourceDf = sourceDfs.get(getTableAliasName(joins[0].mainTable()));
+        }
+        currentDf = sourceDf;
+    }
+
     private Set<Class<? extends TableSpark>> getSourceTables(TableSpark targetTable) {
         Set<Class<? extends TableSpark>> set = new HashSet<>();
         Arrays.stream(targetTable.getClass().getDeclaredFields())
@@ -99,15 +109,5 @@ public class DataFrameBuilder {
                         columnsForSelect.toArray(new Column[0])
                 );
         return currentDf;
-    }
-
-    private void getMainSourceDf() {
-        Dataset<Row> sourceDf = sourceDfs.get(sourceDfs.keySet().iterator().next());
-
-        if (sourceDfs.keySet().size() > 1) {
-            Join[] joins = targetTable.getClass().getAnnotation(Joins.class).joins();
-            sourceDf = sourceDfs.get(getTableAliasName(joins[0].mainTable()));
-        }
-        currentDf = sourceDf;
     }
 }

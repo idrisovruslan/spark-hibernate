@@ -2,18 +2,22 @@ package ru.idrisov.datamart.universal_loader;
 
 import org.apache.spark.sql.Column;
 import org.springframework.stereotype.Component;
+import ru.idrisov.domain.annotations.Aggregate;
 import ru.idrisov.domain.annotations.SourceTableField;
 
-import static org.apache.spark.sql.functions.col;
+import static org.apache.spark.sql.functions.*;
+import static ru.idrisov.utils.TableUtils.getColumnName;
 
 @Component
 public class ColumnWithAggFunctionCreator {
-
-    public Column getColumnWithAggFunction(SourceTableField sourceTableInfo, String columnName) {
-        return getColumnWithAggFunction(sourceTableInfo, columnName, columnName);
-    }
-
-    public Column getColumnWithAggFunction(SourceTableField sourceTableInfo, String columnName, String newColumnName) {
-        return col(columnName).as(newColumnName);
+    public Column getColumnWithAggFunction(Aggregate aggregateInfo, SourceTableField sourceTableInfo) {
+        String columnName = getColumnName(sourceTableInfo);
+        switch (aggregateInfo.function()) {
+            case MAX:
+                return max(col(columnName)).as(columnName);
+            case MIN:
+                return min(col(columnName)).as(columnName);
+        }
+        throw new RuntimeException("Данный тип условия не потдерживается");
     }
 }

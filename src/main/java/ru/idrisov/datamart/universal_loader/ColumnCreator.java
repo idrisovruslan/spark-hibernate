@@ -81,9 +81,10 @@ public class ColumnCreator {
                 .filter(field -> field.isAnnotationPresent(SourceTableField.class))
                 .forEach(field -> {
                     SourceTableField sourceTableInfo = field.getAnnotation(SourceTableField.class);
+                    Aggregate aggregateInfo = field.getAnnotation(Aggregate.class);
 
                     //TODO не доделан
-                    Column col = columnWithAggFunctionCreator.getColumnWithAggFunction(sourceTableInfo, getColumnName(sourceTableInfo));
+                    Column col = columnWithAggFunctionCreator.getColumnWithAggFunction(aggregateInfo, sourceTableInfo);
 
                     listForSelect.add(col);
                 });

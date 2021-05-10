@@ -108,7 +108,9 @@ public class DataFrameBuilder {
 
     public DataFrameBuilder addToDfGroupByWithAggFunctions() {
         if (Arrays.stream(targetTable.getClass().getDeclaredFields())
-                .noneMatch(field -> (field.isAnnotationPresent(GroupBy.class) && field.isAnnotationPresent(Aggregate.class)))) {
+                .noneMatch(field -> (field.isAnnotationPresent(GroupBy.class))) ||
+                Arrays.stream(targetTable.getClass().getDeclaredFields())
+                        .noneMatch(field -> (field.isAnnotationPresent(Aggregate.class)))) {
             return this;
         }
 
@@ -140,7 +142,9 @@ public class DataFrameBuilder {
 
     public DataFrameBuilder addToDfAggregateFunctions() {
         if (Arrays.stream(targetTable.getClass().getDeclaredFields())
-                .noneMatch(field -> (!field.isAnnotationPresent(GroupBy.class) && field.isAnnotationPresent(Aggregate.class)))) {
+                .anyMatch(field -> (field.isAnnotationPresent(GroupBy.class))) ||
+                Arrays.stream(targetTable.getClass().getDeclaredFields())
+                        .noneMatch(field -> (field.isAnnotationPresent(Aggregate.class)))) {
             return this;
         }
         List<Column> columnsForAgg = columnCreator.getColumnsForAgg(targetTable);

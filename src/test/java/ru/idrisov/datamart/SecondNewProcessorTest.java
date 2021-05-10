@@ -79,6 +79,8 @@ class SecondNewProcessorTest {
                         col("`second_src_schema@src.src_second_field_two`").as("trg_from_second_table_field")
                 );
         res.show();
+        System.out.println("Ручной вариант");
+
 
         secondNewProcessor.process();
 
@@ -88,6 +90,7 @@ class SecondNewProcessorTest {
         assertEquals(sourceDf1After.count(), 3);
         Dataset<Row> targetDf = readTable(sparkSession, secondTargetTable);
         targetDf.show();
+        System.out.println("Авто вариант");
         assertEquals(targetDf.count(), 2);
     }
 }

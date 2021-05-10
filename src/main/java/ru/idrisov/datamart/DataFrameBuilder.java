@@ -123,16 +123,16 @@ public class DataFrameBuilder {
                     .agg(
                             columnsForAgg.remove(0)
                     );
+        } else {
+            currentDf = currentDf
+                    .groupBy(
+                            columnsForGroupBy.toArray(new Column[0])
+                    )
+                    .agg(
+                            columnsForAgg.remove(0),
+                            columnsForAgg.toArray(new Column[0])
+                    );
         }
-
-        currentDf = currentDf
-                .groupBy(
-                        columnsForGroupBy.toArray(new Column[0])
-                )
-                .agg(
-                        columnsForAgg.remove(0),
-                        columnsForAgg.toArray(new Column[0])
-                );
 
         aggregated = true;
         return this;
@@ -150,13 +150,13 @@ public class DataFrameBuilder {
                     .agg(
                             columnsForAgg.remove(0)
                     );
+        } else {
+            currentDf = currentDf
+                    .agg(
+                            columnsForAgg.remove(0),
+                            columnsForAgg.toArray(new Column[0])
+                    );
         }
-
-        currentDf = currentDf
-                .agg(
-                        columnsForAgg.remove(0),
-                        columnsForAgg.toArray(new Column[0])
-                );
 
         aggregated = true;
         return this;

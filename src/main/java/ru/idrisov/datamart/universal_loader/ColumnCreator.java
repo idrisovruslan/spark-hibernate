@@ -1,11 +1,9 @@
-package ru.idrisov.datamart;
+package ru.idrisov.datamart.universal_loader;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.spark.sql.Column;
 import org.springframework.stereotype.Component;
-import ru.idrisov.domain.annotations.Join;
-import ru.idrisov.domain.annotations.SourceTableField;
-import ru.idrisov.domain.annotations.WhereCondition;
+import ru.idrisov.domain.annotations.*;
 import ru.idrisov.domain.entitys.TableSpark;
 import ru.idrisov.domain.enums.WherePlace;
 
@@ -22,6 +20,7 @@ import static ru.idrisov.utils.TableUtils.getColumnName;
 public class ColumnCreator {
 
     final ColumnWithExpressionCreator columnWithExpressionCreator;
+    final ColumnWithAggFunctionCreator columnWithAggFunctionCreator;
 
     public List<Column> getColumnsForWhere(TableSpark targetTable, WherePlace place) {
         List<Column> columnsForPreWhere = new ArrayList<>();
@@ -57,6 +56,38 @@ public class ColumnCreator {
                     columnsForPreWhere.add(conditionColumn);
                 });
         return columnsForPreWhere;
+    }
+
+    public List<Column> getColumnsForGroupBy(TableSpark targetTable) {
+        List<Column> listForGroupBy = new ArrayList<>();
+
+        Arrays.stream(targetTable.getClass().getDeclaredFields())
+                .filter(field -> field.isAnnotationPresent(GroupBy.class))
+                .filter(field -> field.isAnnotationPresent(SourceTableField.class))
+                .forEach(field -> {
+                    SourceTableField sourceTableInfo = field.getAnnotation(SourceTableField.class);
+                    Column col = col(getColumnName(sourceTableInfo)).as(getColumnName(sourceTableInfo));
+
+                    listForGroupBy.add(col);
+                });
+        return listForGroupBy;
+    }
+
+    public List<Column> getColumnsForAgg(TableSpark targetTable) {
+        List<Column> listForSelect = new ArrayList<>();
+
+        Arrays.stream(targetTable.getClass().getDeclaredFields())
+                .filter(field -> field.isAnnotationPresent(Aggregate.class))
+                .filter(field -> field.isAnnotationPresent(SourceTableField.class))
+                .forEach(field -> {
+                    SourceTableField sourceTableInfo = field.getAnnotation(SourceTableField.class);
+
+                    //TODO не доделан
+                    Column col = columnWithAggFunctionCreator.getColumnWithAggFunction(sourceTableInfo, getColumnName(sourceTableInfo));
+
+                    listForSelect.add(col);
+                });
+        return listForSelect;
     }
 
     public List<Column> getColumnsForSelect(TableSpark targetTable, Boolean aggregated) {

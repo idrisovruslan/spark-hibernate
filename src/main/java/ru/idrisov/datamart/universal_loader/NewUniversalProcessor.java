@@ -1,4 +1,4 @@
-package ru.idrisov.datamart;
+package ru.idrisov.datamart.universal_loader;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.spark.sql.Dataset;

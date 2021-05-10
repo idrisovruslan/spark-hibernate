@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.idrisov.SparkTestConfig;
+import ru.idrisov.datamart.universal_loader.NewUniversalProcessor;
 import ru.idrisov.domain.entitys.FirstSourceTable;
 import ru.idrisov.domain.entitys.SecondSourceTable;
 import ru.idrisov.domain.entitys.SecondTargetTable;

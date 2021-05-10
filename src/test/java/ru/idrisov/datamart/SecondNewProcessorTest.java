@@ -36,7 +36,7 @@ class SecondNewProcessorTest {
 
     @Test
     void defaultTest() {
-        recreateAllSchemas(sparkSession, firstSourceTable, secondTargetTable);
+        recreateAllSchemas(sparkSession, firstSourceTable, secondSourceTable, secondTargetTable);
 
         Dataset<Row> sourceDf1 = createRandomSingleRowDf(sparkSession, firstSourceTable)
                 .withColumn("src_accnt_sk", lit("aaa"))

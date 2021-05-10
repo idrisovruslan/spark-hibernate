@@ -140,10 +140,9 @@ public class DataFrameBuilder {
 
     public DataFrameBuilder addToDfAggregateFunctions() {
         if (Arrays.stream(targetTable.getClass().getDeclaredFields())
-                .noneMatch(field -> field.isAnnotationPresent(Aggregate.class))) {
+                .noneMatch(field -> (!field.isAnnotationPresent(GroupBy.class) && field.isAnnotationPresent(Aggregate.class)))) {
             return this;
         }
-
         List<Column> columnsForAgg = columnCreator.getColumnsForAgg(targetTable);
 
         if (columnsForAgg.size() == 1) {

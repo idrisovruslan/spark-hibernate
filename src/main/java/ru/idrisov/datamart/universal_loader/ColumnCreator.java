@@ -114,7 +114,7 @@ public class ColumnCreator {
     }
 
     public Column getColumnFromColumnsList(List<Column> columnsList) {
-        Column resultColumn = lit("1").equalTo("1");
+        Column resultColumn = columnsList.remove(0);
 
         //TODO Реализовать поддержку or
         for (Column column : columnsList) {

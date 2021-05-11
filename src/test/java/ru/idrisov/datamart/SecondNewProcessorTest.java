@@ -31,8 +31,6 @@ class SecondNewProcessorTest {
     SecondTargetTable secondTargetTable;
     @Autowired
     SparkSession sparkSession;
-    @Autowired
-    NewUniversalProcessor newUniversalProcessor;
 
     @Test
     void defaultTest() {

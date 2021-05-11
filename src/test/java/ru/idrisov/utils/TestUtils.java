@@ -47,7 +47,7 @@ public class TestUtils {
 
     public static void recreateAllSchemas(SparkSession sparkSession, TableSpark... tablesSpark) {
         List<String> schemaNames = Stream.of(tablesSpark)
-                .map(tableSpark -> tableSpark.getClass().getAnnotation(EntitySpark.class).tableSchema())
+                .map(tableSpark -> tableSpark.getClass().getAnnotation(EntitySpark.class).tableSchema().getSchemaName())
                 .distinct().collect(Collectors.toList());
 
         schemaNames.forEach(schemaName -> {

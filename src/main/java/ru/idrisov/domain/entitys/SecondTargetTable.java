@@ -4,9 +4,10 @@ import org.springframework.stereotype.Component;
 import ru.idrisov.domain.annotations.*;
 import ru.idrisov.domain.enums.AggregateFunctions;
 import ru.idrisov.domain.enums.JoinTypes;
+import ru.idrisov.domain.enums.TableSchema;
 
 @Component
-@EntitySpark(tableSchema = "target_schema", tableName = "second_target", filling = true)
+@EntitySpark(tableSchema = TableSchema.CUSTOM_FIN_FSO_TMD_STG, tableName = "target_two", filling = true)
 @Joins(joins = {
         @Join(joinType = JoinTypes.LEFT,
                 mainTable = FirstSourceTable.class,

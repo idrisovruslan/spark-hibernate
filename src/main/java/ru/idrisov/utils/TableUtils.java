@@ -61,7 +61,7 @@ public class TableUtils {
 
     private static String getTableFullName(Class<? extends TableSpark> tableSparkClass, String separator) {
         EntitySpark annotation = tableSparkClass.getAnnotation(EntitySpark.class);
-        return annotation.tableSchema() + separator +  annotation.tableName();
+        return annotation.tableSchema().getSchemaName() + separator +  annotation.tableName();
     }
 
     public static String getColumnName(SourceTableField sourceTableInfo) {

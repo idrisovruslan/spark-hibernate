@@ -83,6 +83,11 @@ public class DataFrameBuilder {
 
     private DataFrameBuilder addToDfWhereCondition(WherePlace place) {
         List<Column> columnsForWhereBeforeJoin = columnCreator.getColumnsForWhere(targetTable, place);
+
+        if (columnsForWhereBeforeJoin.isEmpty()) {
+            return this;
+        }
+
         Column columnForPreWhere = columnCreator.getColumnFromColumnsList(columnsForWhereBeforeJoin);
 
         currentDf = currentDf

@@ -116,9 +116,6 @@ public class ColumnCreator {
     public Column getColumnFromColumnsList(List<Column> columnsList) {
         Column resultColumn = lit("1").equalTo("1");
 
-        if(columnsList.isEmpty()){
-            return resultColumn;
-        }
         //TODO Реализовать поддержку or
         for (Column column : columnsList) {
             resultColumn = resultColumn.and(column);

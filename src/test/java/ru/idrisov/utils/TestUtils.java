@@ -32,10 +32,7 @@ public class TestUtils {
         String tableFullName = getTableFullName(tableSpark);
 
         String[] partitionColumnNames = Arrays.stream(tableSpark.getClass().getDeclaredFields())
-                .filter(declaredField -> {
-                    PartitionField partitionFieldAnnotation = declaredField.getAnnotation(PartitionField.class);
-                    return partitionFieldAnnotation != null;
-                })
+                .filter(declaredField -> declaredField.isAnnotationPresent(PartitionField.class))
                 .map(Field::getName)
                 .toArray(String[]::new);
         createTable(df, tableFullName, partitionColumnNames);

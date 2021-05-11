@@ -3,7 +3,7 @@ package ru.idrisov.datamart;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.idrisov.datamart.universal_loader.NewUniversalProcessor;
-import ru.idrisov.domain.entitys.FirstTargetTable;
+import ru.idrisov.domain.entitys.tests.FirstTargetTable;
 
 @Service
 @AllArgsConstructor

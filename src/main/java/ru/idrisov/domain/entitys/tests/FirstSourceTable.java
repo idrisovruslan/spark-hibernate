@@ -1,15 +1,16 @@
-package ru.idrisov.domain.entitys;
+package ru.idrisov.domain.entitys.tests;
 
 import org.springframework.stereotype.Component;
 import ru.idrisov.domain.annotations.EntitySpark;
 import ru.idrisov.domain.annotations.PartitionField;
+import ru.idrisov.domain.entitys.TableSpark;
 import ru.idrisov.domain.enums.TableSchema;
 
 import java.sql.Timestamp;
 
 @Component
 @EntitySpark(tableSchema = TableSchema.CUSTOM_FIN_FSO_TMD_STG, tableName = "src_one", filling = false)
-public class FirstSourceTable implements TableSpark{
+public class FirstSourceTable implements TableSpark {
     String src_accnt_sk;
 
     String src_accnt_status_sk;

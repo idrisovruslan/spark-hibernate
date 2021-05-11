@@ -1,7 +1,8 @@
-package ru.idrisov.domain.entitys;
+package ru.idrisov.domain.entitys.tests;
 
 import org.springframework.stereotype.Component;
 import ru.idrisov.domain.annotations.*;
+import ru.idrisov.domain.entitys.TableSpark;
 import ru.idrisov.domain.enums.*;
 
 import java.sql.Timestamp;
@@ -15,7 +16,7 @@ import java.sql.Timestamp;
                 joinCondition = {@JoinCondition(mainTableField = "src_accnt_sk", joinedTableField = "src_second_field")}
                 )
 })
-public class FirstTargetTable implements TableSpark{
+public class FirstTargetTable implements TableSpark {
 
     @SourceTableField(sourceTable = FirstSourceTable.class, sourceFieldName = "src_accnt_sk")
     String accnt_sk;

@@ -1,7 +1,8 @@
-package ru.idrisov.domain.entitys;
+package ru.idrisov.domain.entitys.tests;
 
 import org.springframework.stereotype.Component;
 import ru.idrisov.domain.annotations.*;
+import ru.idrisov.domain.entitys.TableSpark;
 import ru.idrisov.domain.enums.AggregateFunctions;
 import ru.idrisov.domain.enums.JoinTypes;
 import ru.idrisov.domain.enums.TableSchema;
@@ -15,7 +16,7 @@ import ru.idrisov.domain.enums.TableSchema;
                 joinCondition = {@JoinCondition(mainTableField = "src_accnt_sk", joinedTableField = "src_second_field")}
         )
 })
-public class SecondTargetTable implements TableSpark{
+public class SecondTargetTable implements TableSpark {
 
     @SourceTableField(sourceTable = FirstSourceTable.class, sourceFieldName = "src_accnt_sk")
     @GroupBy

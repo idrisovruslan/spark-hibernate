@@ -8,10 +8,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.idrisov.SparkTestConfig;
-import ru.idrisov.datamart.universal_loader.NewUniversalProcessor;
-import ru.idrisov.domain.entitys.FirstSourceTable;
-import ru.idrisov.domain.entitys.SecondSourceTable;
-import ru.idrisov.domain.entitys.SecondTargetTable;
+import ru.idrisov.domain.entitys.tests.FirstSourceTable;
+import ru.idrisov.domain.entitys.tests.SecondSourceTable;
+import ru.idrisov.domain.entitys.tests.SecondTargetTable;
 
 import static org.apache.spark.sql.functions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;

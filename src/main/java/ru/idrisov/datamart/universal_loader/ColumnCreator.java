@@ -102,8 +102,7 @@ public class ColumnCreator {
 
                     StringBuilder columnName = new StringBuilder(getColumnName(sourceTableInfo));
                     if (aggregated) {
-                        columnName.insert(0, "`");
-                        columnName.append("`");
+                        columnName.insert(0, "`").append("`");
                     }
 
                     Column col = col(columnName.toString()).as(targetFieldName);

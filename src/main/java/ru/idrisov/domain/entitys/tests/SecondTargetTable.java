@@ -7,11 +7,10 @@ import ru.idrisov.domain.annotations.*;
 import ru.idrisov.domain.entitys.TableSpark;
 import ru.idrisov.domain.enums.AggregateFunctions;
 import ru.idrisov.domain.enums.JoinTypes;
-import ru.idrisov.domain.enums.TableSchema;
 
 @Component
 @FieldDefaults(level= AccessLevel.PUBLIC)
-@EntitySpark(tableSchema = TableSchema.CUSTOM_FIN_FSO_TMD_STG, tableName = "target_two", filling = true)
+@EntitySpark(tableSchema = "custom_fin_fso_tmd_stg", tableName = "target_two", filling = true)
 @Joins(joins = {
         @Join(joinType = JoinTypes.LEFT,
                 mainTable = FirstSourceTable.class,

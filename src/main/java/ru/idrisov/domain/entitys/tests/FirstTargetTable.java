@@ -5,13 +5,16 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Component;
 import ru.idrisov.domain.annotations.*;
 import ru.idrisov.domain.entitys.TableSpark;
-import ru.idrisov.domain.enums.*;
+import ru.idrisov.domain.enums.ColumnValue;
+import ru.idrisov.domain.enums.ConditionType;
+import ru.idrisov.domain.enums.JoinTypes;
+import ru.idrisov.domain.enums.WherePlace;
 
 import java.sql.Timestamp;
 
 @Component
 @FieldDefaults(level= AccessLevel.PUBLIC)
-@EntitySpark(tableSchema = TableSchema.CUSTOM_FIN_FSO_TMD_STG, tableName = "target_one", filling = true)
+@EntitySpark(tableSchema = "custom_fin_fso_tmd_stg", tableName = "target_one", filling = true)
 @Joins(joins = {
         @Join(joinType = JoinTypes.LEFT,
                 mainTable = FirstSourceTable.class,

@@ -3,9 +3,9 @@ package ru.idrisov.utils;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.spark.sql.*;
 import org.apache.spark.sql.types.*;
-import ru.idrisov.domain.entitys.TableSpark;
 import ru.idrisov.domain.annotations.EntitySpark;
 import ru.idrisov.domain.annotations.PartitionField;
+import ru.idrisov.domain.entitys.TableSpark;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
@@ -47,7 +47,7 @@ public class TestUtils {
 
     public static void recreateAllSchemas(SparkSession sparkSession, TableSpark... tablesSpark) {
         List<String> schemaNames = Stream.of(tablesSpark)
-                .map(tableSpark -> tableSpark.getClass().getAnnotation(EntitySpark.class).tableSchema().getSchemaName())
+                .map(tableSpark -> tableSpark.getClass().getAnnotation(EntitySpark.class).tableSchema())
                 .distinct().collect(Collectors.toList());
 
         schemaNames.forEach(schemaName -> {

@@ -6,13 +6,12 @@ import org.springframework.stereotype.Component;
 import ru.idrisov.domain.annotations.EntitySpark;
 import ru.idrisov.domain.annotations.PartitionField;
 import ru.idrisov.domain.entitys.TableSpark;
-import ru.idrisov.domain.enums.TableSchema;
 
 import java.sql.Timestamp;
 
 @Component
 @FieldDefaults(level= AccessLevel.PUBLIC)
-@EntitySpark(tableSchema = TableSchema.CUSTOM_FIN_FSO_TMD_STG, tableName = "src_one", filling = false)
+@EntitySpark(tableSchema = "custom_fin_fso_tmd_stg", tableName = "src_one", filling = false)
 public class FirstSourceTable implements TableSpark {
     String src_accnt_sk;
 

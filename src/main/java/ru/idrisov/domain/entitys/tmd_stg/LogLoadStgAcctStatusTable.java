@@ -6,13 +6,12 @@ import org.springframework.stereotype.Component;
 import ru.idrisov.domain.annotations.EntitySpark;
 import ru.idrisov.domain.annotations.PartitionField;
 import ru.idrisov.domain.entitys.TableSpark;
-import ru.idrisov.domain.enums.TableSchema;
 
 import java.sql.Timestamp;
 
 @Component
 @FieldDefaults(level= AccessLevel.PUBLIC)
-@EntitySpark(tableSchema = TableSchema.CUSTOM_FIN_FSO_TMD_STG, tableName = "log_load_stg_acct_status", filling = false)
+@EntitySpark(tableSchema = "custom_fin_fso_tmd_stg", tableName = "log_load_stg_acct_status", filling = false)
 public class LogLoadStgAcctStatusTable implements TableSpark {
 
      Timestamp create_date;

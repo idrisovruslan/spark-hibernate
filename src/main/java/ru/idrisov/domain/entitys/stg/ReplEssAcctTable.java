@@ -6,18 +6,18 @@ import org.springframework.stereotype.Component;
 import ru.idrisov.domain.annotations.EntitySpark;
 import ru.idrisov.domain.annotations.PartitionField;
 import ru.idrisov.domain.entitys.TableSpark;
-import ru.idrisov.domain.enums.TableSchema;
 
 import java.sql.Timestamp;
 
 @Component
 @FieldDefaults(level= AccessLevel.PUBLIC)
-@EntitySpark(tableSchema = TableSchema.CUSTOM_FIN_FSO_TMD_STG, tableName = "repl_ess_acct", filling = false)
+@EntitySpark(tableSchema = "custom_fin_fso_tmd_stg", tableName = "repl_ess_acct", filling = false)
 public class ReplEssAcctTable implements TableSpark {
 
     Long src_ctl_loading;
     Timestamp src_ctl_validfrom;
-    createDecimal src_ctl_csn;
+    //TODO добавить потдержку DecimalType
+    //createDecimal src_ctl_csn;
     String acct_sk;
     String active;
     String acct_purp_sk;

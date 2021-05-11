@@ -83,7 +83,6 @@ public class ColumnCreator {
                     SourceTableField sourceTableInfo = field.getAnnotation(SourceTableField.class);
                     Aggregate aggregateInfo = field.getAnnotation(Aggregate.class);
 
-                    //TODO не доделан
                     Column col = columnWithAggFunctionCreator.getColumnWithAggFunction(aggregateInfo, sourceTableInfo);
 
                     listForSelect.add(col);

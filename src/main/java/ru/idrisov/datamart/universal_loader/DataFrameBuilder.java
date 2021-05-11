@@ -76,6 +76,7 @@ public class DataFrameBuilder {
         return addToDfWhereCondition(WherePlace.AFTER_JOIN);
     }
 
+    //TODO проверить работоспособность
     public DataFrameBuilder addToDfWhereConditionAfterGroupBy() {
         return addToDfWhereCondition(WherePlace.AFTER_AGGREGATE);
     }

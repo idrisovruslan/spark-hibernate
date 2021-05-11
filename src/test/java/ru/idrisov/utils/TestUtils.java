@@ -31,7 +31,7 @@ public class TestUtils {
     public static void createTable(Dataset<Row> df, TableSpark tableSpark) {
         String tableFullName = getTableFullName(tableSpark);
 
-        String[] partitionColumnNames = Arrays.stream(tableSpark.getClass().getDeclaredFields())
+        String[] partitionColumnNames = Arrays.stream(tableSpark.getClass(). getFields())
                 .filter(declaredField -> declaredField.isAnnotationPresent(PartitionField.class))
                 .map(Field::getName)
                 .toArray(String[]::new);
@@ -58,7 +58,7 @@ public class TestUtils {
 
     private static StructType createTableStruct(TableSpark tableSpark) {
         StructType structType = new StructType();
-        for (Field declaredField : tableSpark.getClass().getDeclaredFields()) {
+        for (Field declaredField : tableSpark.getClass(). getFields()) {
             structType = structType.add(declaredField.getName(), getDataTypeFromJavaType(declaredField.getType()));
         }
         return structType;

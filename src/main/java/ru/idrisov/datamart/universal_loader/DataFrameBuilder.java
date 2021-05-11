@@ -62,7 +62,7 @@ public class DataFrameBuilder {
 
     private Set<Class<? extends TableSpark>> getSourceTables(TableSpark targetTable) {
         Set<Class<? extends TableSpark>> set = new HashSet<>();
-        Arrays.stream(targetTable.getClass().getDeclaredFields())
+        Arrays.stream(targetTable.getClass(). getFields())
                 .filter(field -> field.isAnnotationPresent(SourceTableField.class))
                 .forEach(field -> set.add(field.getAnnotation(SourceTableField.class).sourceTable()));
         return set;
@@ -113,9 +113,9 @@ public class DataFrameBuilder {
     }
 
     public DataFrameBuilder addToDfGroupByWithAggFunctions() {
-        if (Arrays.stream(targetTable.getClass().getDeclaredFields())
+        if (Arrays.stream(targetTable.getClass(). getFields())
                 .noneMatch(field -> (field.isAnnotationPresent(GroupBy.class))) ||
-                Arrays.stream(targetTable.getClass().getDeclaredFields())
+                Arrays.stream(targetTable.getClass(). getFields())
                         .noneMatch(field -> (field.isAnnotationPresent(Aggregate.class)))) {
             return this;
         }
@@ -147,9 +147,9 @@ public class DataFrameBuilder {
     }
 
     public DataFrameBuilder addToDfAggregateFunctions() {
-        if (Arrays.stream(targetTable.getClass().getDeclaredFields())
+        if (Arrays.stream(targetTable.getClass(). getFields())
                 .anyMatch(field -> (field.isAnnotationPresent(GroupBy.class))) ||
-                Arrays.stream(targetTable.getClass().getDeclaredFields())
+                Arrays.stream(targetTable.getClass(). getFields())
                         .noneMatch(field -> (field.isAnnotationPresent(Aggregate.class)))) {
             return this;
         }

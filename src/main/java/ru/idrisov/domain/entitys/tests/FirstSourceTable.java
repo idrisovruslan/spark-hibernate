@@ -11,20 +11,20 @@ import java.sql.Timestamp;
 @Component
 @EntitySpark(tableSchema = TableSchema.CUSTOM_FIN_FSO_TMD_STG, tableName = "src_one", filling = false)
 public class FirstSourceTable implements TableSpark {
-    String src_accnt_sk;
+    public String src_accnt_sk;
 
-    String src_accnt_status_sk;
+    public String src_accnt_status_sk;
 
-    Timestamp src_begin_dt;
+    public Timestamp src_begin_dt;
 
     @PartitionField
-    String src_accnt_lvl_1_code;
+    public String src_accnt_lvl_1_code;
 
-    String src_user_name;
+    public String src_user_name;
 
-    Timestamp src_create_date;
+    public Timestamp src_create_date;
 
-    Long src_ctl_loading;
+    public Long src_ctl_loading;
 
-    Timestamp src_ctl_validfrom;
+    public Timestamp src_ctl_validfrom;
 }

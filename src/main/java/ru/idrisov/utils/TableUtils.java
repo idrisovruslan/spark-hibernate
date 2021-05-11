@@ -30,7 +30,7 @@ public class TableUtils {
     public static void saveAsTable(Dataset<Row> df, TableSpark tableSpark) {
         String tableFullName = getTableFullName(tableSpark);
 
-        String[] partitionColumnNames = Arrays.stream(tableSpark.getClass().getDeclaredFields())
+        String[] partitionColumnNames = Arrays.stream(tableSpark.getClass(). getFields())
                 .filter(declaredField -> {
                     PartitionField partitionFieldAnnotation = declaredField.getAnnotation(PartitionField.class);
                     return partitionFieldAnnotation != null;

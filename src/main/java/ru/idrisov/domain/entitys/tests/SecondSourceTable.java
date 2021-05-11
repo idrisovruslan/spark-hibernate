@@ -10,7 +10,7 @@ import ru.idrisov.domain.enums.TableSchema;
 @EntitySpark(tableSchema = TableSchema.CUSTOM_FIN_FSO_TMD_STG, tableName = "src_two", filling = false)
 public class SecondSourceTable implements TableSpark {
     @PartitionField
-    String src_second_field;
+    public String src_second_field;
 
-    String src_second_field_two;
+    public String src_second_field_two;
 }

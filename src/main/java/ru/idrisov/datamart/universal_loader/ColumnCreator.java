@@ -25,7 +25,7 @@ public class ColumnCreator {
     public List<Column> getColumnsForWhere(TableSpark targetTable, WherePlace place) {
         List<Column> columnsForPreWhere = new ArrayList<>();
 
-        Arrays.stream(targetTable.getClass().getDeclaredFields())
+        Arrays.stream(targetTable.getClass(). getFields())
                 .filter(field -> field.isAnnotationPresent(SourceTableField.class))
                 .filter(field -> {
                     SourceTableField sourceTableInfo = field.getAnnotation(SourceTableField.class);
@@ -61,7 +61,7 @@ public class ColumnCreator {
     public List<Column> getColumnsForGroupBy(TableSpark targetTable) {
         List<Column> listForGroupBy = new ArrayList<>();
 
-        Arrays.stream(targetTable.getClass().getDeclaredFields())
+        Arrays.stream(targetTable.getClass(). getFields())
                 .filter(field -> field.isAnnotationPresent(GroupBy.class))
                 .filter(field -> field.isAnnotationPresent(SourceTableField.class))
                 .forEach(field -> {
@@ -76,7 +76,7 @@ public class ColumnCreator {
     public List<Column> getColumnsForAgg(TableSpark targetTable) {
         List<Column> listForSelect = new ArrayList<>();
 
-        Arrays.stream(targetTable.getClass().getDeclaredFields())
+        Arrays.stream(targetTable.getClass(). getFields())
                 .filter(field -> field.isAnnotationPresent(Aggregate.class))
                 .filter(field -> field.isAnnotationPresent(SourceTableField.class))
                 .forEach(field -> {
@@ -93,7 +93,7 @@ public class ColumnCreator {
     public List<Column> getColumnsForSelect(TableSpark targetTable, Boolean aggregated) {
         List<Column> listForSelect = new ArrayList<>();
 
-        Arrays.stream(targetTable.getClass().getDeclaredFields())
+        Arrays.stream(targetTable.getClass(). getFields())
                 .filter(field -> field.isAnnotationPresent(SourceTableField.class))
                 .forEach(field -> {
                     SourceTableField sourceTableInfo = field.getAnnotation(SourceTableField.class);

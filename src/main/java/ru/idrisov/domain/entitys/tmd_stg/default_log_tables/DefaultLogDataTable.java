@@ -1,4 +1,4 @@
-package ru.idrisov.domain.entitys.tmd_stg;
+package ru.idrisov.domain.entitys.tmd_stg.default_log_tables;
 
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;

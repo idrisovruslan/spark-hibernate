@@ -8,6 +8,6 @@ import ru.idrisov.universal_loader.annotations.EntitySpark;
 
 @Component
 @FieldDefaults(level= AccessLevel.PUBLIC)
-@EntitySpark(tableSchema = "custom_fin_fso_tmd_stg", tableName = "log_load_stg_acct_status", filling = false)
-public class LogLoadStgAcctStatusTable extends DefaultLogStatusTable {
+@EntitySpark(tableSchema = "custom_fin_fso_tmd_stg", tableName = "log_load_dmds_acct_status", filling = true)
+public class LogLoadDmdsAcctStatusTable extends DefaultLogStatusTable {
 }

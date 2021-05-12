@@ -17,7 +17,7 @@ public class ReplEssAcctTable implements TableSpark {
     Long src_ctl_loading;
     Timestamp src_ctl_validfrom;
     //TODO добавить потдержку DecimalType
-    //createDecimal src_ctl_csn;
+    createDecimal src_ctl_csn;
     String acct_sk;
     String active;
     String acct_purp_sk;

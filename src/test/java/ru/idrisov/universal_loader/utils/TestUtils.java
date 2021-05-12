@@ -3,6 +3,7 @@ package ru.idrisov.universal_loader.utils;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.spark.sql.*;
 import org.apache.spark.sql.types.*;
+import ru.idrisov.universal_loader.annotations.DecimalInfo;
 import ru.idrisov.universal_loader.annotations.EntitySpark;
 import ru.idrisov.universal_loader.annotations.PartitionField;
 import ru.idrisov.universal_loader.entitys.TableSpark;
@@ -59,20 +60,33 @@ public class TestUtils {
     private static StructType createTableStruct(TableSpark tableSpark) {
         StructType structType = new StructType();
         for (Field declaredField : tableSpark.getClass(). getFields()) {
-            structType = structType.add(declaredField.getName(), getDataTypeFromJavaType(declaredField.getType()));
+            structType = structType.add(declaredField.getName(), getDataTypeFromJavaType(declaredField));
         }
         return structType;
     }
 
-    private static DataType getDataTypeFromJavaType(Class<?> typeField) {
+    private static DataType getDataTypeFromJavaType(Field declaredField) {
+        Class<?> typeField = declaredField.getType();
+
         if (typeField.equals(String.class)){
             return DataTypes.StringType;
         } else if (typeField.equals(Timestamp.class)) {
             return DataTypes.TimestampType;
         } else if (typeField.equals(Long.class)) {
             return DataTypes.LongType;
+        } else if (typeField.equals(BigDecimal.class)) {
+            return getDecimalType(declaredField);
         }
+
         throw new RuntimeException("Нет такого типа");
+    }
+
+    private static DecimalType getDecimalType(Field declaredField) {
+        if (!declaredField.isAnnotationPresent(DecimalInfo.class)) {
+            return DataTypes.createDecimalType();
+        }
+        DecimalInfo decimalInfo = declaredField.getAnnotation(DecimalInfo.class);
+        return DataTypes.createDecimalType(decimalInfo.precision(), decimalInfo.scale());
     }
 
     public static Dataset<Row> createRandomSingleRowDf(SparkSession sparkSession, TableSpark tableSpark) {

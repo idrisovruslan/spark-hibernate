@@ -3,10 +3,12 @@ package ru.idrisov.domain.entitys.stg;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Component;
+import ru.idrisov.universal_loader.annotations.DecimalInfo;
 import ru.idrisov.universal_loader.annotations.EntitySpark;
 import ru.idrisov.universal_loader.annotations.PartitionField;
 import ru.idrisov.universal_loader.entitys.TableSpark;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 @Component
@@ -16,8 +18,10 @@ public class ReplEssAcctTable implements TableSpark {
 
     Long src_ctl_loading;
     Timestamp src_ctl_validfrom;
-    //TODO добавить потдержку DecimalType
-    createDecimal src_ctl_csn;
+
+    @DecimalInfo(precision = 38, scale = 0)
+    BigDecimal src_ctl_csn;
+
     String acct_sk;
     String active;
     String acct_purp_sk;

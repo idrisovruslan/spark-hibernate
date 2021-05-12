@@ -20,7 +20,6 @@ import static ru.idrisov.universal_loader.utils.TableUtils.getColumnName;
 public class ColumnCreator {
 
     final ColumnWithExpressionCreator columnWithExpressionCreator;
-    final ColumnWithAggFunctionCreator columnWithAggFunctionCreator;
 
     public List<Column> getColumnsForWhere(TableSpark targetTable, WherePlace place) {
         List<Column> columnsForPreWhere = new ArrayList<>();
@@ -83,7 +82,8 @@ public class ColumnCreator {
                     SourceTableField sourceTableInfo = field.getAnnotation(SourceTableField.class);
                     Aggregate aggregateInfo = field.getAnnotation(Aggregate.class);
 
-                    Column col = columnWithAggFunctionCreator.getColumnWithAggFunction(aggregateInfo, sourceTableInfo);
+                    String columnName = getColumnName(sourceTableInfo);
+                    Column col = expr(String.format(aggregateInfo.function(), columnName)).as(columnName);
 
                     listForSelect.add(col);
                 });

@@ -5,7 +5,6 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Component;
 import ru.idrisov.universal_loader.annotations.*;
 import ru.idrisov.universal_loader.entitys.TableSpark;
-import ru.idrisov.universal_loader.enums.AggregateFunctions;
 import ru.idrisov.universal_loader.enums.JoinTypes;
 
 @Component
@@ -25,7 +24,7 @@ public class SecondTargetTable implements TableSpark {
     String accnt_sk;
 
     @SourceTableField(sourceTable = FirstSourceTable.class, sourceFieldName = "src_ctl_loading")
-    @Aggregate(function = AggregateFunctions.MAX)
+    @Aggregate(function = "sum(%s)")
     Long ctl_loading;
 
     @SourceTableField(sourceTable = SecondSourceTable.class, sourceFieldName = "src_second_field_two")

@@ -6,7 +6,7 @@ import org.apache.spark.sql.Row;
 import org.springframework.stereotype.Service;
 import ru.idrisov.universal_loader.entitys.TableSpark;
 
-import static ru.idrisov.utils.TableUtils.saveAsTable;
+import static ru.idrisov.universal_loader.utils.TableUtils.saveAsTable;
 
 @Service
 @RequiredArgsConstructor

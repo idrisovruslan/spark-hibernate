@@ -8,7 +8,7 @@ import ru.idrisov.universal_loader.enums.ColumnValue;
 
 import static org.apache.spark.sql.functions.col;
 import static org.apache.spark.sql.functions.current_timestamp;
-import static ru.idrisov.utils.TableUtils.getColumnName;
+import static ru.idrisov.universal_loader.utils.TableUtils.getColumnName;
 
 @Component
 public class ColumnWithExpressionCreator {

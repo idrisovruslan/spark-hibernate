@@ -15,8 +15,8 @@ import ru.idrisov.domain.entitys.tests.SecondSourceTable;
 import static org.apache.spark.sql.functions.current_timestamp;
 import static org.apache.spark.sql.functions.lit;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static ru.idrisov.utils.TableUtils.readTable;
-import static ru.idrisov.utils.TestUtils.*;
+import static ru.idrisov.universal_loader.utils.TableUtils.readTable;
+import static ru.idrisov.universal_loader.utils.TestUtils.*;
 
 @SpringBootTest(classes = SparkTestConfig.class)
 @Slf4j

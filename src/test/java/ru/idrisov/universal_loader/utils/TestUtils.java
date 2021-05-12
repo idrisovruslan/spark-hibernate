@@ -1,4 +1,4 @@
-package ru.idrisov.utils;
+package ru.idrisov.universal_loader.utils;
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.spark.sql.*;
@@ -16,7 +16,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static ru.idrisov.utils.TableUtils.getTableFullName;
+import static ru.idrisov.universal_loader.utils.TableUtils.getTableFullName;
 
 public class TestUtils {
     private static final String DEFAULT_FORMAT = "hive";

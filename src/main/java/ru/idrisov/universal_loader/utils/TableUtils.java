@@ -1,4 +1,4 @@
-package ru.idrisov.utils;
+package ru.idrisov.universal_loader.utils;
 
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;

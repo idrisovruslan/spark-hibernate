@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.apache.spark.sql.functions.col;
-import static ru.idrisov.utils.TableUtils.getColumnName;
+import static ru.idrisov.universal_loader.utils.TableUtils.getColumnName;
 
 @Component
 @RequiredArgsConstructor

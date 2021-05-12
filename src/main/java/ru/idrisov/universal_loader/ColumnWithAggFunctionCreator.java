@@ -6,7 +6,7 @@ import ru.idrisov.universal_loader.annotations.Aggregate;
 import ru.idrisov.universal_loader.annotations.SourceTableField;
 
 import static org.apache.spark.sql.functions.*;
-import static ru.idrisov.utils.TableUtils.getColumnName;
+import static ru.idrisov.universal_loader.utils.TableUtils.getColumnName;
 
 @Component
 public class ColumnWithAggFunctionCreator {

@@ -15,8 +15,8 @@ import ru.idrisov.universal_loader.enums.WherePlace;
 
 import java.util.*;
 
-import static ru.idrisov.utils.TableUtils.getTableAliasName;
-import static ru.idrisov.utils.TableUtils.readTable;
+import static ru.idrisov.universal_loader.utils.TableUtils.getTableAliasName;
+import static ru.idrisov.universal_loader.utils.TableUtils.readTable;
 
 @Component
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)

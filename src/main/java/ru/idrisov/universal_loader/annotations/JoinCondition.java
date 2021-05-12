@@ -1,6 +1,6 @@
-package ru.idrisov.domain.annotations;
+package ru.idrisov.universal_loader.annotations;
 
-import ru.idrisov.domain.enums.ConditionType;
+import ru.idrisov.universal_loader.enums.ConditionType;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

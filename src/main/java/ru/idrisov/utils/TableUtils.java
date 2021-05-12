@@ -4,10 +4,10 @@ import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SaveMode;
 import org.apache.spark.sql.SparkSession;
-import ru.idrisov.domain.annotations.EntitySpark;
-import ru.idrisov.domain.annotations.PartitionField;
-import ru.idrisov.domain.annotations.SourceTableField;
-import ru.idrisov.domain.entitys.TableSpark;
+import ru.idrisov.universal_loader.annotations.EntitySpark;
+import ru.idrisov.universal_loader.annotations.PartitionField;
+import ru.idrisov.universal_loader.annotations.SourceTableField;
+import ru.idrisov.universal_loader.entitys.TableSpark;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;

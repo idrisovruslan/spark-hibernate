@@ -1,9 +1,9 @@
-package ru.idrisov.datamart.universal_loader;
+package ru.idrisov.universal_loader;
 
 import org.apache.spark.sql.Column;
 import org.springframework.stereotype.Component;
-import ru.idrisov.domain.annotations.Aggregate;
-import ru.idrisov.domain.annotations.SourceTableField;
+import ru.idrisov.universal_loader.annotations.Aggregate;
+import ru.idrisov.universal_loader.annotations.SourceTableField;
 
 import static org.apache.spark.sql.functions.*;
 import static ru.idrisov.utils.TableUtils.getColumnName;

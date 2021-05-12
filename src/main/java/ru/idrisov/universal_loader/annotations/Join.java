@@ -1,7 +1,7 @@
-package ru.idrisov.domain.annotations;
+package ru.idrisov.universal_loader.annotations;
 
-import ru.idrisov.domain.entitys.TableSpark;
-import ru.idrisov.domain.enums.JoinTypes;
+import ru.idrisov.universal_loader.entitys.TableSpark;
+import ru.idrisov.universal_loader.enums.JoinTypes;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

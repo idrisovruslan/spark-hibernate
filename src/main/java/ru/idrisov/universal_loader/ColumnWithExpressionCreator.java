@@ -1,10 +1,10 @@
-package ru.idrisov.datamart.universal_loader;
+package ru.idrisov.universal_loader;
 
 import org.apache.spark.sql.Column;
 import org.springframework.stereotype.Component;
-import ru.idrisov.domain.annotations.SourceTableField;
-import ru.idrisov.domain.annotations.WhereCondition;
-import ru.idrisov.domain.enums.ColumnValue;
+import ru.idrisov.universal_loader.annotations.SourceTableField;
+import ru.idrisov.universal_loader.annotations.WhereCondition;
+import ru.idrisov.universal_loader.enums.ColumnValue;
 
 import static org.apache.spark.sql.functions.col;
 import static org.apache.spark.sql.functions.current_timestamp;

@@ -1,4 +1,4 @@
-package ru.idrisov.domain.enums;
+package ru.idrisov.universal_loader.enums;
 
 public enum AggregateFunctions {
     MAX,

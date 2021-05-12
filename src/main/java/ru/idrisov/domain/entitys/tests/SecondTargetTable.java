@@ -3,10 +3,10 @@ package ru.idrisov.domain.entitys.tests;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Component;
-import ru.idrisov.domain.annotations.*;
-import ru.idrisov.domain.entitys.TableSpark;
-import ru.idrisov.domain.enums.AggregateFunctions;
-import ru.idrisov.domain.enums.JoinTypes;
+import ru.idrisov.universal_loader.annotations.*;
+import ru.idrisov.universal_loader.entitys.TableSpark;
+import ru.idrisov.universal_loader.enums.AggregateFunctions;
+import ru.idrisov.universal_loader.enums.JoinTypes;
 
 @Component
 @FieldDefaults(level= AccessLevel.PUBLIC)

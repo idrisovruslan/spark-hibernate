@@ -1,4 +1,4 @@
-package ru.idrisov.domain.annotations;
+package ru.idrisov.universal_loader.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

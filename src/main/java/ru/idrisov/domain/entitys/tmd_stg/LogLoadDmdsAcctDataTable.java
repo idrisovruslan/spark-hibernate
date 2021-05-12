@@ -3,7 +3,7 @@
  import lombok.AccessLevel;
  import lombok.experimental.FieldDefaults;
  import org.springframework.stereotype.Component;
- import ru.idrisov.domain.annotations.EntitySpark;
+ import ru.idrisov.universal_loader.annotations.EntitySpark;
 
 @Component
 @FieldDefaults(level= AccessLevel.PUBLIC)

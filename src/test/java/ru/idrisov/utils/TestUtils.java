@@ -3,9 +3,9 @@ package ru.idrisov.utils;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.spark.sql.*;
 import org.apache.spark.sql.types.*;
-import ru.idrisov.domain.annotations.EntitySpark;
-import ru.idrisov.domain.annotations.PartitionField;
-import ru.idrisov.domain.entitys.TableSpark;
+import ru.idrisov.universal_loader.annotations.EntitySpark;
+import ru.idrisov.universal_loader.annotations.PartitionField;
+import ru.idrisov.universal_loader.entitys.TableSpark;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;

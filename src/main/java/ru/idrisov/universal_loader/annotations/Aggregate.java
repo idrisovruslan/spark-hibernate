@@ -1,6 +1,6 @@
-package ru.idrisov.domain.annotations;
+package ru.idrisov.universal_loader.annotations;
 
-import ru.idrisov.domain.enums.AggregateFunctions;
+import ru.idrisov.universal_loader.enums.AggregateFunctions;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -1,6 +1,4 @@
-package ru.idrisov.domain.annotations;
-
-import ru.idrisov.domain.entitys.TableSpark;
+package ru.idrisov.universal_loader.annotations;
 
 import java.lang.annotation.*;
 

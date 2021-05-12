@@ -3,12 +3,12 @@ package ru.idrisov.domain.entitys.tests;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Component;
-import ru.idrisov.domain.annotations.*;
-import ru.idrisov.domain.entitys.TableSpark;
-import ru.idrisov.domain.enums.ColumnValue;
-import ru.idrisov.domain.enums.ConditionType;
-import ru.idrisov.domain.enums.JoinTypes;
-import ru.idrisov.domain.enums.WherePlace;
+import ru.idrisov.universal_loader.annotations.*;
+import ru.idrisov.universal_loader.entitys.TableSpark;
+import ru.idrisov.universal_loader.enums.ColumnValue;
+import ru.idrisov.universal_loader.enums.ConditionType;
+import ru.idrisov.universal_loader.enums.JoinTypes;
+import ru.idrisov.universal_loader.enums.WherePlace;
 
 import java.sql.Timestamp;
 

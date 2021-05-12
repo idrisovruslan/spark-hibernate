@@ -3,9 +3,9 @@ package ru.idrisov.domain.entitys.tmd_stg;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Component;
-import ru.idrisov.domain.annotations.EntitySpark;
-import ru.idrisov.domain.annotations.PartitionField;
-import ru.idrisov.domain.entitys.TableSpark;
+import ru.idrisov.universal_loader.annotations.EntitySpark;
+import ru.idrisov.universal_loader.annotations.PartitionField;
+import ru.idrisov.universal_loader.entitys.TableSpark;
 
 import java.sql.Timestamp;
 

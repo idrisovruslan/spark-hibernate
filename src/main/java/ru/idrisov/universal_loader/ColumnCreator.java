@@ -1,18 +1,17 @@
-package ru.idrisov.datamart.universal_loader;
+package ru.idrisov.universal_loader;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.spark.sql.Column;
 import org.springframework.stereotype.Component;
-import ru.idrisov.domain.annotations.*;
-import ru.idrisov.domain.entitys.TableSpark;
-import ru.idrisov.domain.enums.WherePlace;
+import ru.idrisov.universal_loader.annotations.*;
+import ru.idrisov.universal_loader.entitys.TableSpark;
+import ru.idrisov.universal_loader.enums.WherePlace;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.apache.spark.sql.functions.col;
-import static org.apache.spark.sql.functions.lit;
 import static ru.idrisov.utils.TableUtils.getColumnName;
 
 @Component

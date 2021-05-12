@@ -1,10 +1,10 @@
-package ru.idrisov.datamart.universal_loader;
+package ru.idrisov.universal_loader;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.springframework.stereotype.Service;
-import ru.idrisov.domain.entitys.TableSpark;
+import ru.idrisov.universal_loader.entitys.TableSpark;
 
 import static ru.idrisov.utils.TableUtils.saveAsTable;
 

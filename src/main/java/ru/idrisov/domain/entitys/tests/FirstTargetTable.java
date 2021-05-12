@@ -24,7 +24,7 @@ import java.sql.Timestamp;
 })
 public class FirstTargetTable implements TableSpark {
 
-    @SourceTableField(sourceTable = FirstSourceTable.class, sourceFieldName = "src_accnt_sk")
+    @SourceTableField(sourceTable = FirstSourceTable.class, sourceFieldName = "src_accnt_sk", function = "substring(%s, 0, 3)")
     String accnt_sk;
 
     @SourceTableField(sourceTable = FirstSourceTable.class, sourceFieldName = "src_accnt_status_sk")

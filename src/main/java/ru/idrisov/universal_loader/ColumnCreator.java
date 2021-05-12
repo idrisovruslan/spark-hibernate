@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.apache.spark.sql.functions.col;
+import static org.apache.spark.sql.functions.expr;
 import static ru.idrisov.universal_loader.utils.TableUtils.getColumnName;
 
 @Component
@@ -103,7 +104,7 @@ public class ColumnCreator {
                         columnName.insert(0, "`").append("`");
                     }
 
-                    Column col = col(columnName.toString()).as(targetFieldName);
+                    Column col = expr(String.format(sourceTableInfo.function(), columnName)).as(targetFieldName);
 
                     listForSelect.add(col);
                 });

@@ -15,7 +15,7 @@ import java.util.Arrays;
 public class TableUtils {
     private static final String DEFAULT_FORMAT = "hive";
     private static final String SEPARATOR = ".";
-    private static final String ALIAS_SEPARATOR = "@";
+    private static final String ALIAS_SEPARATOR = "_______";
 
     public static Dataset<Row> readTable(SparkSession sparkSession, TableSpark tableSpark) {
         return readTable(sparkSession, getTableFullName(tableSpark));

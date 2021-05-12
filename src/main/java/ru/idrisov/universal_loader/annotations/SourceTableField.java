@@ -12,5 +12,6 @@ import java.lang.annotation.Target;
 public @interface SourceTableField {
     Class<? extends TableSpark> sourceTable();
     String sourceFieldName();
+    String function() default "%s";
     WhereCondition[] conditions() default {};
 }

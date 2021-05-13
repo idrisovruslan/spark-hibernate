@@ -3,6 +3,7 @@ package ru.idrisov.domain.entitys.stg;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Component;
+import ru.idrisov.domain.enums.TableSchema;
 import ru.idrisov.universal_loader.annotations.DecimalInfo;
 import ru.idrisov.universal_loader.annotations.EntitySpark;
 import ru.idrisov.universal_loader.annotations.PartitionField;
@@ -13,7 +14,7 @@ import java.sql.Timestamp;
 
 @Component
 @FieldDefaults(level= AccessLevel.PUBLIC)
-@EntitySpark(tableSchema = "custom_fin_fso_tmd_stg", tableName = "repl_ess_acct", filling = false)
+@EntitySpark(tableSchema = TableSchema.Schema.CUSTOM_FIN_FSO_STG, tableName = "repl_ess_acct", filling = false)
 public class ReplEssAcctTable implements TableSpark {
 
     Long src_ctl_loading;

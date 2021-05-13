@@ -3,13 +3,14 @@ package ru.idrisov.domain.entitys.tests;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Component;
+import ru.idrisov.domain.enums.TableSchema;
 import ru.idrisov.universal_loader.annotations.*;
 import ru.idrisov.universal_loader.entitys.TableSpark;
 import ru.idrisov.universal_loader.enums.JoinTypes;
 
 @Component
 @FieldDefaults(level= AccessLevel.PUBLIC)
-@EntitySpark(tableSchema = "custom_fin_fso_tmd_stg", tableName = "target_two", filling = true)
+@EntitySpark(tableSchema = TableSchema.Schema.CUSTOM_FIN_FSO_STG, tableName = "target_two", filling = true)
 @Joins(joins = {
         @Join(joinType = JoinTypes.LEFT,
                 mainTable = FirstSourceTable.class,

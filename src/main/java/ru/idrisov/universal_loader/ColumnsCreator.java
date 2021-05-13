@@ -17,7 +17,7 @@ import static ru.idrisov.universal_loader.utils.TableUtils.getColumnName;
 
 @Component
 @RequiredArgsConstructor
-public class ColumnCreator {
+public class ColumnsCreator {
 
     final ColumnWithExpressionCreator columnWithExpressionCreator;
 

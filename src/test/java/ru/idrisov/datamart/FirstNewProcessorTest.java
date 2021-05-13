@@ -37,21 +37,21 @@ class FirstNewProcessorTest {
         recreateAllSchemas(sparkSession, firstSourceTable, secondSourceTable, firstTargetTable);
 
         Dataset<Row> sourceDf1 = createRandomSingleRowDf(sparkSession, firstSourceTable)
-                .withColumn("src_accnt_lvl_1_code", lit("0409301"))
-                .withColumn("src_accnt_sk", lit("0409301"))
+                .withColumn("src_accnt_lvl_1_code", lit("0409301000"))
+                .withColumn("src_accnt_sk", lit("0409301000"))
                 .withColumn("src_create_date", current_timestamp());
         Dataset<Row> sourceDf2 = createRandomSingleRowDf(sparkSession, firstSourceTable)
-                .withColumn("src_accnt_lvl_1_code", lit("0409301"))
-                .withColumn("src_accnt_sk", lit("1111111"))
+                .withColumn("src_accnt_lvl_1_code", lit("0409301000"))
+                .withColumn("src_accnt_sk", lit("1111111000"))
                 .withColumn("src_create_date", current_timestamp());
         Dataset<Row> sourceDf3 = createRandomSingleRowDf(sparkSession, firstSourceTable)
-                .withColumn("src_accnt_lvl_1_code", lit("2222222"))
+                .withColumn("src_accnt_lvl_1_code", lit("2222222000"))
                 .withColumn("src_create_date", current_timestamp());
         Dataset<Row> sourceDf = sourceDf1.union(sourceDf2).union(sourceDf3);
         createTable(sourceDf, firstSourceTable);
 
         Dataset<Row> source2Df = createRandomSingleRowDf(sparkSession, secondSourceTable)
-                .withColumn("src_second_field", lit("0409301"));
+                .withColumn("src_second_field", lit("0409301000"));
         createTable(source2Df, secondSourceTable);
 
 
@@ -60,12 +60,12 @@ class FirstNewProcessorTest {
 
         Dataset<Row> sourceDf1After = readTable(sparkSession, firstSourceTable);
         sourceDf1After.show();
-        assertEquals(sourceDf1After.count(), 3);
+        assertEquals(3, sourceDf1After.count());
         Dataset<Row> sourceDf2After = readTable(sparkSession, secondSourceTable);
         sourceDf2After.show();
-        assertEquals(sourceDf2After.count(), 1);
+        assertEquals(1, sourceDf2After.count());
         Dataset<Row> targetDf = readTable(sparkSession, firstTargetTable);
         targetDf.show();
-        assertEquals(targetDf.count(), 2);
+        assertEquals(2, targetDf.count());
     }
 }

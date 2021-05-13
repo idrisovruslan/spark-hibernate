@@ -25,7 +25,7 @@ public class DataFrameBuilder {
 
     private final ApplicationContext applicationContext;
     private final SparkSession sparkSession;
-    private final ColumnCreator columnCreator;
+    private final ColumnsCreator columnsCreator;
 
     private Dataset<Row> currentDf;
     private Map<String, Dataset<Row>> sourceDfs;
@@ -82,13 +82,13 @@ public class DataFrameBuilder {
     }
 
     private DataFrameBuilder addToDfWhereCondition(WherePlace place) {
-        List<Column> columnsForWhereBeforeJoin = columnCreator.getColumnsForWhere(targetTable, place);
+        List<Column> columnsForWhereBeforeJoin = columnsCreator.getColumnsForWhere(targetTable, place);
 
         if (columnsForWhereBeforeJoin.isEmpty()) {
             return this;
         }
 
-        Column columnForPreWhere = columnCreator.getColumnFromColumnsList(columnsForWhereBeforeJoin);
+        Column columnForPreWhere = columnsCreator.getColumnFromColumnsList(columnsForWhereBeforeJoin);
 
         currentDf = currentDf
                 .where(
@@ -100,8 +100,8 @@ public class DataFrameBuilder {
     public DataFrameBuilder addToDfJoins() {
         for (Join join : targetTable.getClass().getAnnotation(Joins.class).joins()) {
 
-            List<Column> columnsForJoin = columnCreator.getColumnsForJoin(join);
-            Column columnForJoin = columnCreator.getColumnFromColumnsList(columnsForJoin);
+            List<Column> columnsForJoin = columnsCreator.getColumnsForJoin(join);
+            Column columnForJoin = columnsCreator.getColumnFromColumnsList(columnsForJoin);
 
             currentDf = currentDf
                     .join(sourceDfs.get(getTableAliasName(join.joinedTable())),
@@ -120,8 +120,8 @@ public class DataFrameBuilder {
             return this;
         }
 
-        List<Column> columnsForGroupBy = columnCreator.getColumnsForGroupBy(targetTable);
-        List<Column> columnsForAgg = columnCreator.getColumnsForAgg(targetTable);
+        List<Column> columnsForGroupBy = columnsCreator.getColumnsForGroupBy(targetTable);
+        List<Column> columnsForAgg = columnsCreator.getColumnsForAgg(targetTable);
 
         if (columnsForAgg.size() == 1) {
             currentDf = currentDf
@@ -153,7 +153,7 @@ public class DataFrameBuilder {
                         .noneMatch(field -> (field.isAnnotationPresent(Aggregate.class)))) {
             return this;
         }
-        List<Column> columnsForAgg = columnCreator.getColumnsForAgg(targetTable);
+        List<Column> columnsForAgg = columnsCreator.getColumnsForAgg(targetTable);
 
         if (columnsForAgg.size() == 1) {
             currentDf = currentDf
@@ -173,7 +173,7 @@ public class DataFrameBuilder {
     }
 
     public Dataset<Row> getResultTargetDf() {
-        List<Column> columnsForSelect = columnCreator.getColumnsForSelect(targetTable, aggregated);
+        List<Column> columnsForSelect = columnsCreator.getColumnsForSelect(targetTable, aggregated);
         currentDf = currentDf
                 .select(
                         columnsForSelect.toArray(new Column[0])

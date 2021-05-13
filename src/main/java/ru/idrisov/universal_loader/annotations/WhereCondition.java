@@ -18,5 +18,7 @@ public @interface WhereCondition {
     ColumnValue columnRightValue() default ColumnValue.none;
     String[] arrayStringRightValue() default {};
 
+    String leftValueFunction() default "%s";
+
     WherePlace place();
 }

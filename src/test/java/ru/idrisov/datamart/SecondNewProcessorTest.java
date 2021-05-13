@@ -36,13 +36,13 @@ class SecondNewProcessorTest {
         recreateAllSchemas(sparkSession, firstSourceTable, secondSourceTable, secondTargetTable);
 
         Dataset<Row> sourceDf1 = createRandomSingleRowDf(sparkSession, firstSourceTable)
-                .withColumn("src_accnt_sk", lit("aaa"))
+                .withColumn("src_accnt_sk", lit("aaaaaa"))
                 .withColumn("src_ctl_loading", lit("111"));
         Dataset<Row> sourceDf2 = createRandomSingleRowDf(sparkSession, firstSourceTable)
-                .withColumn("src_accnt_sk", lit("aaa"))
+                .withColumn("src_accnt_sk", lit("aaaaaa"))
                 .withColumn("src_ctl_loading", lit("222"));
         Dataset<Row> sourceDf3 = createRandomSingleRowDf(sparkSession, firstSourceTable)
-                .withColumn("src_accnt_sk", lit("bbb"))
+                .withColumn("src_accnt_sk", lit("bbbbbb"))
                 .withColumn("src_ctl_loading", lit("333"));
         Dataset<Row> sourceDf = sourceDf1.union(sourceDf2).union(sourceDf3);
         createTable(sourceDf, firstSourceTable);

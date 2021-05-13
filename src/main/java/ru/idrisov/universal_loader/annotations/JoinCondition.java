@@ -11,5 +11,7 @@ import java.lang.annotation.Target;
 public @interface JoinCondition {
     ConditionType type() default ConditionType.EQUAL_TO;
     String mainTableField();
+    String mainTableFunction() default "%s";
     String joinedTableField();
+    String joinedTableFunction() default "%s";
 }

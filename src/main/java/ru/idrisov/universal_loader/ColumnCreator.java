@@ -49,10 +49,14 @@ public class ColumnCreator {
 
         Arrays.stream(join.joinCondition())
                 .forEach(joinCondition -> {
+
                     //TODO добавить возможность других проверок условий(если придумаю каких)
-                    Column conditionColumn = col(getColumnName(join.mainTable(), joinCondition.mainTableField()))
-                            .equalTo(col(getColumnName(join.joinedTable(), joinCondition.joinedTableField())));
-                    columnsForPreWhere.add(conditionColumn);
+                    String mainColumnName = getColumnName(join.mainTable(), joinCondition.mainTableField());
+                    String joinedColumnName = getColumnName(join.joinedTable(), joinCondition.joinedTableField());
+                    Column col = expr(String.format(joinCondition.mainTableFunction(), mainColumnName))
+                            .equalTo(expr(String.format(joinCondition.joinedTableFunction(), joinedColumnName)));
+
+                    columnsForPreWhere.add(col);
                 });
         return columnsForPreWhere;
     }

@@ -15,7 +15,7 @@ import ru.idrisov.universal_loader.enums.JoinTypes;
         @Join(joinType = JoinTypes.LEFT,
                 mainTable = FirstSourceTable.class,
                 joinedTable = SecondSourceTable.class,
-                joinCondition = {@JoinCondition(mainTableField = "src_accnt_sk", joinedTableField = "src_second_field")}
+                joinCondition = {@JoinCondition(mainTableField = "src_accnt_sk", mainTableFunction = "substring(%s, 0, 3)", joinedTableField = "src_second_field")}
         )
 })
 public class SecondTargetTable implements TableSpark {

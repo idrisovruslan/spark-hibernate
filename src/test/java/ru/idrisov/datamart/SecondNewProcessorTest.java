@@ -36,23 +36,23 @@ class SecondNewProcessorTest {
         recreateAllSchemas(sparkSession, firstSourceTable, secondSourceTable, secondTargetTable);
 
         Dataset<Row> sourceDf1 = createRandomSingleRowDf(sparkSession, firstSourceTable)
-                .withColumn("src_accnt_sk", lit("aaaaaa"))
+                .withColumn("src_accnt_sk", lit("qwert"))
                 .withColumn("src_ctl_loading", lit("111"));
         Dataset<Row> sourceDf2 = createRandomSingleRowDf(sparkSession, firstSourceTable)
-                .withColumn("src_accnt_sk", lit("aaaaaa"))
+                .withColumn("src_accnt_sk", lit("qwert"))
                 .withColumn("src_ctl_loading", lit("222"));
         Dataset<Row> sourceDf3 = createRandomSingleRowDf(sparkSession, firstSourceTable)
-                .withColumn("src_accnt_sk", lit("bbbbbb"))
+                .withColumn("src_accnt_sk", lit("asdfg"))
                 .withColumn("src_ctl_loading", lit("333"));
         Dataset<Row> sourceDf = sourceDf1.union(sourceDf2).union(sourceDf3);
         createTable(sourceDf, firstSourceTable);
 
 
         Dataset<Row> source2Df1 = createRandomSingleRowDf(sparkSession, secondSourceTable)
-                .withColumn("src_second_field", lit("aaa"))
+                .withColumn("src_second_field", lit("qwe"))
                 .withColumn("src_second_field_two", lit("123"));
         Dataset<Row> source2Df2 = createRandomSingleRowDf(sparkSession, secondSourceTable)
-                .withColumn("src_second_field", lit("bbb"))
+                .withColumn("src_second_field", lit("asd"))
                 .withColumn("src_second_field_two", lit("567"));
         Dataset<Row> source2Df = source2Df1.union(source2Df2);
         createTable(source2Df, secondSourceTable);
@@ -60,7 +60,7 @@ class SecondNewProcessorTest {
 
         Dataset<Row> res = sourceDf.alias("first_src_schema@src")
                 .join(source2Df.alias("second_src_schema@src"),
-                        col("first_src_schema@src.src_accnt_sk").equalTo(col("second_src_schema@src.src_second_field")),
+                        substring(col("first_src_schema@src.src_accnt_sk"), 0, 3).equalTo(col("second_src_schema@src.src_second_field")),
                         "left"
                 )
                 .groupBy(

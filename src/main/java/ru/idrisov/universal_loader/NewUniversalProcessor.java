@@ -22,6 +22,8 @@ public class NewUniversalProcessor {
                 .addToDfAggregateFunctions()
                 .addToDfGroupByWithAggFunctions()
                 .addToDfWhereConditionAfterGroupBy()
+                .addToDfDistinct()
+                .createResultTargetDf()
                 .getResultTargetDf();
 
         saveAsTable(targetDf, targetTable);

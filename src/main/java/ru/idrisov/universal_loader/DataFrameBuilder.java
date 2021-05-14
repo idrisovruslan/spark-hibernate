@@ -172,12 +172,23 @@ public class DataFrameBuilder {
         return this;
     }
 
-    public Dataset<Row> getResultTargetDf() {
+    public DataFrameBuilder createResultTargetDf() {
         List<Column> columnsForSelect = columnsCreator.getColumnsForSelect(targetTable, aggregated);
         currentDf = currentDf
                 .select(
                         columnsForSelect.toArray(new Column[0])
                 );
+        return this;
+    }
+
+    public DataFrameBuilder addToDfDistinct() {
+        if (targetTable.getClass().isAnnotationPresent(Distinct.class)) {
+            currentDf.distinct();
+        }
+        return this;
+    }
+
+    public Dataset<Row> getResultTargetDf() {
         return currentDf;
     }
 }

@@ -22,6 +22,7 @@ import java.sql.Timestamp;
                 joinCondition = {@JoinCondition(mainTableField = "src_accnt_sk", joinedTableField = "src_second_field")}
                 )
 })
+@Distinct
 public class FirstTargetTable implements TableSpark {
 
     @SourceTableField(sourceTable = FirstSourceTable.class, sourceFieldName = "src_accnt_sk", function = "substring(%s, 0, 3)")

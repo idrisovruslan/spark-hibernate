@@ -24,7 +24,7 @@ public class ColumnsCreator {
     public List<Column> getColumnsForWhere(TableSpark targetTable, WherePlace place) {
         List<Column> columnsForPreWhere = new ArrayList<>();
 
-        Arrays.stream(targetTable.getClass(). getFields())
+        Arrays.stream(targetTable.getClass().getFields())
                 .filter(field -> field.isAnnotationPresent(SourceTableField.class))
                 .filter(field -> {
                     SourceTableField sourceTableInfo = field.getAnnotation(SourceTableField.class);
@@ -35,10 +35,30 @@ public class ColumnsCreator {
                     SourceTableField sourceTableInfo = field.getAnnotation(SourceTableField.class);
                     WhereCondition[] whereConditions = sourceTableInfo.conditions();
 
-                    Arrays.stream(whereConditions).forEach(whereCondition -> {
+                    Arrays.stream(whereConditions)
+                            .filter(whereCondition -> whereCondition.place().equals(place))
+                            .forEach(whereCondition -> {
                         Column col = columnWithExpressionCreator.getColumnWithExpression(sourceTableInfo, whereCondition);
                         columnsForPreWhere.add(col);
                     });
+                });
+
+        if (!targetTable.getClass().isAnnotationPresent(WhereConditions.class)) {
+            return columnsForPreWhere;
+        }
+
+        Arrays.stream(targetTable.getClass().getAnnotation(WhereConditions.class).conditionsFields())
+                .filter(conditionsFieldsInfo -> Arrays.stream(conditionsFieldsInfo.conditions())
+                        .anyMatch(whereCondition -> whereCondition.place().equals(place)))
+                .forEach(conditionsFieldsInfo -> {
+                    WhereCondition[] whereConditions = conditionsFieldsInfo.conditions();
+
+                    Arrays.stream(whereConditions)
+                            .filter(whereCondition -> whereCondition.place().equals(place))
+                            .forEach(whereCondition -> {
+                                Column col = columnWithExpressionCreator.getColumnWithExpression(conditionsFieldsInfo, whereCondition);
+                                columnsForPreWhere.add(col);
+                            });
                 });
 
         return columnsForPreWhere;
@@ -64,7 +84,7 @@ public class ColumnsCreator {
     public List<Column> getColumnsForGroupBy(TableSpark targetTable) {
         List<Column> listForGroupBy = new ArrayList<>();
 
-        Arrays.stream(targetTable.getClass(). getFields())
+        Arrays.stream(targetTable.getClass().getFields())
                 .filter(field -> field.isAnnotationPresent(GroupBy.class))
                 .filter(field -> field.isAnnotationPresent(SourceTableField.class))
                 .forEach(field -> {
@@ -79,7 +99,7 @@ public class ColumnsCreator {
     public List<Column> getColumnsForAgg(TableSpark targetTable) {
         List<Column> listForSelect = new ArrayList<>();
 
-        Arrays.stream(targetTable.getClass(). getFields())
+        Arrays.stream(targetTable.getClass().getFields())
                 .filter(field -> field.isAnnotationPresent(Aggregate.class))
                 .filter(field -> field.isAnnotationPresent(SourceTableField.class))
                 .forEach(field -> {
@@ -97,7 +117,7 @@ public class ColumnsCreator {
     public List<Column> getColumnsForSelect(TableSpark targetTable, Boolean aggregated) {
         List<Column> listForSelect = new ArrayList<>();
 
-        Arrays.stream(targetTable.getClass(). getFields())
+        Arrays.stream(targetTable.getClass().getFields())
                 .filter(field -> field.isAnnotationPresent(SourceTableField.class))
                 .forEach(field -> {
                     SourceTableField sourceTableInfo = field.getAnnotation(SourceTableField.class);

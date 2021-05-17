@@ -50,6 +50,26 @@ public class DataFrameBuilder {
         return sourcesDfs;
     }
 
+    private Set<Class<? extends TableSpark>> getSourceTables(TableSpark targetTable) {
+        Set<Class<? extends TableSpark>> set = new HashSet<>();
+
+        Arrays.stream(targetTable.getClass().getFields())
+                .filter(field -> field.isAnnotationPresent(SourceTableField.class))
+                .forEach(field -> set.add(field.getAnnotation(SourceTableField.class).sourceTable()));
+
+        if (!targetTable.getClass().isAnnotationPresent(Joins.class)) {
+            return set;
+        }
+
+        Arrays.stream(targetTable.getClass().getAnnotation(Joins.class).joins())
+                .forEach(join -> {
+                    set.add(join.mainTable());
+                    set.add(join.joinedTable());
+                });
+
+        return set;
+    }
+
     private void getMainSourceDf() {
         Dataset<Row> sourceDf = sourceDfs.get(sourceDfs.keySet().iterator().next());
 
@@ -60,13 +80,6 @@ public class DataFrameBuilder {
         currentDf = sourceDf;
     }
 
-    private Set<Class<? extends TableSpark>> getSourceTables(TableSpark targetTable) {
-        Set<Class<? extends TableSpark>> set = new HashSet<>();
-        Arrays.stream(targetTable.getClass(). getFields())
-                .filter(field -> field.isAnnotationPresent(SourceTableField.class))
-                .forEach(field -> set.add(field.getAnnotation(SourceTableField.class).sourceTable()));
-        return set;
-    }
 
     public DataFrameBuilder addToDfWhereConditionBeforeJoin() {
         return addToDfWhereCondition(WherePlace.BEFORE_JOIN);

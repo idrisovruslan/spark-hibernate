@@ -22,8 +22,18 @@ public class ColumnsCreator {
     final ColumnWithExpressionCreator columnWithExpressionCreator;
 
     public List<Column> getColumnsForWhere(TableSpark targetTable, WherePlace place) {
-        List<Column> columnsForPreWhere = new ArrayList<>();
 
+        List<Column> columnsForPreWhere = new ArrayList<>();
+        getColumnsForWhereFromFields(targetTable, place, columnsForPreWhere);
+
+        if (targetTable.getClass().isAnnotationPresent(WhereConditions.class)) {
+            getColumnsForWhereFromClass(targetTable, place, columnsForPreWhere);
+        }
+
+        return columnsForPreWhere;
+    }
+
+    private void getColumnsForWhereFromFields(TableSpark targetTable, WherePlace place, List<Column> columnsForPreWhere) {
         Arrays.stream(targetTable.getClass().getFields())
                 .filter(field -> field.isAnnotationPresent(SourceTableField.class))
                 .filter(field -> {
@@ -42,11 +52,9 @@ public class ColumnsCreator {
                         columnsForPreWhere.add(col);
                     });
                 });
+    }
 
-        if (!targetTable.getClass().isAnnotationPresent(WhereConditions.class)) {
-            return columnsForPreWhere;
-        }
-
+    private void getColumnsForWhereFromClass(TableSpark targetTable, WherePlace place, List<Column> columnsForPreWhere) {
         Arrays.stream(targetTable.getClass().getAnnotation(WhereConditions.class).conditionsFields())
                 .filter(conditionsFieldsInfo -> Arrays.stream(conditionsFieldsInfo.conditions())
                         .anyMatch(whereCondition -> whereCondition.place().equals(place)))
@@ -60,8 +68,6 @@ public class ColumnsCreator {
                                 columnsForPreWhere.add(col);
                             });
                 });
-
-        return columnsForPreWhere;
     }
 
     public List<Column> getColumnsForJoin(Join join) {

@@ -8,7 +8,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface EntitySpark {
-    //TODO придумать механизм стандартизации
     String tableSchema();
     String tableName();
     boolean filling();

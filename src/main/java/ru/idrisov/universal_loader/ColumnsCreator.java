@@ -151,6 +151,10 @@ public class ColumnsCreator {
         return resultColumn;
     }
 
+    private boolean orGroupIsEmpty(Map<Integer, List<Column>> columnsWithOrGroup) {
+        return columnsWithOrGroup.size() == 1 && columnsWithOrGroup.containsKey(-1);
+    }
+
     private Column createConditionColumnWithoutOrGroup(Map<Integer, List<Column>> columnsWithOrGroup) {
         Column resultColumn;
         List<Column> columnsList = columnsWithOrGroup.get(-1);
@@ -179,9 +183,5 @@ public class ColumnsCreator {
             resultColumn = resultColumn.and(tempColumn);
         }
         return resultColumn;
-    }
-
-    private boolean orGroupIsEmpty(Map<Integer, List<Column>> columnsWithOrGroup) {
-        return columnsWithOrGroup.size() == 1 && columnsWithOrGroup.containsKey(-1);
     }
 }

@@ -21,17 +21,16 @@ public class ColumnsCreator {
     public Map<Integer, List<Column>> getColumnsForWhereCondition(TableSpark targetTable, WherePlace place) {
 
         Map<Integer, List<Column>> columnsForWhereWithOrGroup = new HashMap<>();
-
-        getColumnsForWhereFromFields(targetTable, place, columnsForWhereWithOrGroup);
+        getColumnsForWhereConditionFromFields(targetTable, place, columnsForWhereWithOrGroup);
 
         if (targetTable.getClass().isAnnotationPresent(WhereConditions.class)) {
-            getColumnsForWhereFromClass(targetTable, place, columnsForWhereWithOrGroup);
+            getColumnsForWhereConditionFromClass(targetTable, place, columnsForWhereWithOrGroup);
         }
 
         return columnsForWhereWithOrGroup;
     }
 
-    private void getColumnsForWhereFromFields(TableSpark targetTable, WherePlace place, Map<Integer, List<Column>> columnsForWhereWithOrGroup) {
+    private void getColumnsForWhereConditionFromFields(TableSpark targetTable, WherePlace place, Map<Integer, List<Column>> columnsForWhereWithOrGroup) {
         Arrays.stream(targetTable.getClass().getFields())
                 .filter(field -> field.isAnnotationPresent(SourceTableField.class))
                 .filter(field -> {
@@ -41,44 +40,27 @@ public class ColumnsCreator {
                 })
                 .forEach(field -> {
                     SourceTableField sourceTableInfo = field.getAnnotation(SourceTableField.class);
-                    WhereCondition[] whereConditions = sourceTableInfo.conditions();
-
-                    Arrays.stream(whereConditions)
-                            .filter(whereCondition -> whereCondition.place().equals(place))
-                            .forEach(whereCondition -> {
-                                if (columnsForWhereWithOrGroup.containsKey(whereCondition.orGroup())) {
-                                    Column col = columnWithExpressionCreator.getColumnWithExpression(sourceTableInfo, whereCondition);
-                                    columnsForWhereWithOrGroup.get(whereCondition.orGroup()).add(col);
-                                } else {
-                                    List<Column> columnsForWhere = new ArrayList<>();
-                                    Column col = columnWithExpressionCreator.getColumnWithExpression(sourceTableInfo, whereCondition);
-                                    columnsForWhere.add(col);
-                                    columnsForWhereWithOrGroup.put(whereCondition.orGroup(), columnsForWhere);
-                                }
-                    });
+                    fillMapWithOrGroup(place, columnsForWhereWithOrGroup, sourceTableInfo);
                 });
     }
 
-    private void getColumnsForWhereFromClass(TableSpark targetTable, WherePlace place, Map<Integer, List<Column>> columnsForWhereWithOrGroup) {
+    private void getColumnsForWhereConditionFromClass(TableSpark targetTable, WherePlace place, Map<Integer, List<Column>> columnsForWhereWithOrGroup) {
         Arrays.stream(targetTable.getClass().getAnnotation(WhereConditions.class).conditionsFields())
                 .filter(conditionsFieldsInfo -> Arrays.stream(conditionsFieldsInfo.conditions())
                         .anyMatch(whereCondition -> whereCondition.place().equals(place)))
                 .forEach(conditionsFieldsInfo -> {
-                    WhereCondition[] whereConditions = conditionsFieldsInfo.conditions();
+                    fillMapWithOrGroup(place, columnsForWhereWithOrGroup, conditionsFieldsInfo);
+                });
+    }
 
-                    Arrays.stream(whereConditions)
-                            .filter(whereCondition -> whereCondition.place().equals(place))
-                            .forEach(whereCondition -> {
-                                if (columnsForWhereWithOrGroup.containsKey(whereCondition.orGroup())) {
-                                    Column col = columnWithExpressionCreator.getColumnWithExpression(conditionsFieldsInfo, whereCondition);
-                                    columnsForWhereWithOrGroup.get(whereCondition.orGroup()).add(col);
-                                } else {
-                                    List<Column> columnsForWhere = new ArrayList<>();
-                                    Column col = columnWithExpressionCreator.getColumnWithExpression(conditionsFieldsInfo, whereCondition);
-                                    columnsForWhere.add(col);
-                                    columnsForWhereWithOrGroup.put(whereCondition.orGroup(), columnsForWhere);
-                                }
-                            });
+    private void fillMapWithOrGroup(WherePlace place, Map<Integer, List<Column>> columnsForWhereWithOrGroup, SourceTableField sourceTableInfo) {
+        WhereCondition[] whereConditions = sourceTableInfo.conditions();
+
+        Arrays.stream(whereConditions)
+                .filter(whereCondition -> whereCondition.place().equals(place))
+                .forEach(whereCondition -> {
+                    Column col = columnWithExpressionCreator.getColumnWithExpressionFromWhereCondition(sourceTableInfo, whereCondition);
+                    fillMapWithConcreteOrGroup(columnsForWhereWithOrGroup, col, whereCondition.orGroup());
                 });
     }
 
@@ -86,26 +68,20 @@ public class ColumnsCreator {
         Map<Integer, List<Column>> columnsForJoinWithOrGroup = new HashMap<>();
         Arrays.stream(join.joinCondition())
                 .forEach(joinCondition -> {
-
-                    if (columnsForJoinWithOrGroup.containsKey(joinCondition.orGroup())) {
-                        Column col = createExpresionColumn(join, joinCondition);
-                        columnsForJoinWithOrGroup.get(joinCondition.orGroup()).add(col);
-                    } else {
-                        List<Column> columnsForJoin = new ArrayList<>();
-                        Column col = createExpresionColumn(join, joinCondition);
-                        columnsForJoin.add(col);
-                        columnsForJoinWithOrGroup.put(joinCondition.orGroup(), columnsForJoin);
-                    }
-
+                    Column col = columnWithExpressionCreator.getColumnWithExpressionFromJoinCondition(join, joinCondition);
+                    fillMapWithConcreteOrGroup(columnsForJoinWithOrGroup, col, joinCondition.orGroup());
                 });
         return columnsForJoinWithOrGroup;
     }
 
-    private Column createExpresionColumn(Join join, JoinCondition joinCondition) {
-        String mainColumnName = getColumnName(join.mainTable(), joinCondition.mainTableField());
-        String joinedColumnName = getColumnName(join.joinedTable(), joinCondition.joinedTableField());
-        return expr(String.format(joinCondition.mainTableFunction(), mainColumnName))
-                .equalTo(expr(String.format(joinCondition.joinedTableFunction(), joinedColumnName)));
+    private void fillMapWithConcreteOrGroup(Map<Integer, List<Column>> columnsForJoinWithOrGroup, Column col, int orGroup) {
+        if (columnsForJoinWithOrGroup.containsKey(orGroup)) {
+            columnsForJoinWithOrGroup.get(orGroup).add(col);
+        } else {
+            List<Column> columnsForJoin = new ArrayList<>();
+            columnsForJoin.add(col);
+            columnsForJoinWithOrGroup.put(orGroup, columnsForJoin);
+        }
     }
 
     public List<Column> getColumnsForGroupBy(TableSpark targetTable) {
@@ -162,28 +138,40 @@ public class ColumnsCreator {
         return listForSelect;
     }
 
-    public Column getConditionColumnFromColumnsList(Map<Integer, List<Column>> columnsWithOrGroup) {
+    public Column getConditionColumnFromColumnsMap(Map<Integer, List<Column>> columnsWithOrGroup) {
         Column resultColumn;
 
         if (orGroupIsEmpty(columnsWithOrGroup)) {
-            List<Column> columnsList = columnsWithOrGroup.get(-1);
-            resultColumn = columnsList.remove(0);
-            for (Column column : columnsList) {
-                resultColumn = resultColumn.and(column);
-            }
+            resultColumn = createConditionColumnWithoutOrGroup(columnsWithOrGroup);
         } else {
-            resultColumn = lit("1").equalTo("1");
-            for (int key : columnsWithOrGroup.keySet()) {
-                List<Column> columnsList = columnsWithOrGroup.get(key);
-                Column tempColumn = columnsList.remove(0);
-
-                for (Column column : columnsList) {
-                    tempColumn = tempColumn.or(column);
-                }
-                resultColumn = resultColumn.and(tempColumn);
-            }
+            resultColumn = createConditionColumnWithOrGroup(columnsWithOrGroup);
         }
 
+        return resultColumn;
+    }
+
+    private Column createConditionColumnWithoutOrGroup(Map<Integer, List<Column>> columnsWithOrGroup) {
+        Column resultColumn;
+        List<Column> columnsList = columnsWithOrGroup.get(-1);
+        resultColumn = columnsList.remove(0);
+        for (Column column : columnsList) {
+            resultColumn = resultColumn.and(column);
+        }
+        return resultColumn;
+    }
+
+    private Column createConditionColumnWithOrGroup(Map<Integer, List<Column>> columnsWithOrGroup) {
+        Column resultColumn;
+        resultColumn = lit("1").equalTo("1");
+        for (int key : columnsWithOrGroup.keySet()) {
+            List<Column> columnsList = columnsWithOrGroup.get(key);
+            Column tempColumn = columnsList.remove(0);
+
+            for (Column column : columnsList) {
+                tempColumn = tempColumn.or(column);
+            }
+            resultColumn = resultColumn.and(tempColumn);
+        }
         return resultColumn;
     }
 

@@ -101,7 +101,7 @@ public class DataFrameBuilder {
             return this;
         }
 
-        Column columnForPreWhere = columnsCreator.getConditionColumnFromColumnsList(columnsForWhereBeforeJoin);
+        Column columnForPreWhere = columnsCreator.getConditionColumnFromColumnsMap(columnsForWhereBeforeJoin);
 
         currentDf = currentDf
                 .where(
@@ -114,7 +114,7 @@ public class DataFrameBuilder {
         for (Join join : targetTable.getClass().getAnnotation(Joins.class).joins()) {
 
             Map<Integer, List<Column>> columnsForJoinWithOrGroup = columnsCreator.getColumnsForJoinCondition(join);
-            Column columnForJoin = columnsCreator.getConditionColumnFromColumnsList(columnsForJoinWithOrGroup);
+            Column columnForJoin = columnsCreator.getConditionColumnFromColumnsMap(columnsForJoinWithOrGroup);
 
             currentDf = currentDf
                     .join(sourceDfs.get(getTableAliasName(join.joinedTable())),

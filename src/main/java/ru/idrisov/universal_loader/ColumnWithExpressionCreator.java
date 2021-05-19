@@ -2,6 +2,8 @@ package ru.idrisov.universal_loader;
 
 import org.apache.spark.sql.Column;
 import org.springframework.stereotype.Component;
+import ru.idrisov.universal_loader.annotations.Join;
+import ru.idrisov.universal_loader.annotations.JoinCondition;
 import ru.idrisov.universal_loader.annotations.SourceTableField;
 import ru.idrisov.universal_loader.annotations.WhereCondition;
 import ru.idrisov.universal_loader.enums.ColumnValue;
@@ -15,11 +17,18 @@ import static ru.idrisov.universal_loader.utils.TableUtils.getColumnName;
 @Component
 public class ColumnWithExpressionCreator {
 
-    public Column getColumnWithExpression(SourceTableField sourceTableInfo, WhereCondition whereCondition) {
+    public Column getColumnWithExpressionFromWhereCondition(SourceTableField sourceTableInfo, WhereCondition whereCondition) {
         if (rightValueIsEmpty(whereCondition)) {
             return getColumnWithExpressionWithoutValue(sourceTableInfo, whereCondition);
         }
         return getColumnWithExpressionValue(sourceTableInfo, whereCondition);
+    }
+
+    public Column getColumnWithExpressionFromJoinCondition(Join join, JoinCondition joinCondition) {
+        String mainColumnName = getColumnName(join.mainTable(), joinCondition.mainTableField());
+        String joinedColumnName = getColumnName(join.joinedTable(), joinCondition.joinedTableField());
+        return expr(String.format(joinCondition.mainTableFunction(), mainColumnName))
+                .equalTo(expr(String.format(joinCondition.joinedTableFunction(), joinedColumnName)));
     }
 
     private boolean rightValueIsEmpty(WhereCondition whereCondition) {
@@ -28,12 +37,12 @@ public class ColumnWithExpressionCreator {
                 && whereCondition.arrayStringRightValue().length == 0;
     }
 
-    public Column getColumnWithExpressionWithoutValue(SourceTableField sourceTableInfo, WhereCondition whereCondition) {
+    private Column getColumnWithExpressionWithoutValue(SourceTableField sourceTableInfo, WhereCondition whereCondition) {
         String columnName = getColumnName(sourceTableInfo);
         return expr(String.format(whereCondition.type().getConditionFunction(), columnName));
     }
 
-    public Column getColumnWithExpressionValue(SourceTableField sourceTableInfo, WhereCondition whereCondition) {
+    private Column getColumnWithExpressionValue(SourceTableField sourceTableInfo, WhereCondition whereCondition) {
         String rightValue = getRightValueWithCheckValueType(whereCondition);
         String leftValueWithFunction = String.format(whereCondition.leftValueFunction(), getColumnName(sourceTableInfo));
         return expr(String.format(whereCondition.type().getConditionFunction(), leftValueWithFunction, rightValue));
@@ -52,7 +61,7 @@ public class ColumnWithExpressionCreator {
         return rightValue;
     }
 
-    public Column getColumnForColumnValue(WhereCondition whereCondition) {
+    private Column getColumnForColumnValue(WhereCondition whereCondition) {
         switch (whereCondition.columnRightValue()) {
             case current_timestamp:
                 return current_timestamp();

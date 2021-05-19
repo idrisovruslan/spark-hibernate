@@ -9,7 +9,8 @@ import ru.idrisov.universal_loader.enums.WherePlace;
 
 import java.util.*;
 
-import static org.apache.spark.sql.functions.*;
+import static org.apache.spark.sql.functions.col;
+import static org.apache.spark.sql.functions.expr;
 import static ru.idrisov.universal_loader.utils.TableUtils.getColumnName;
 
 @Component
@@ -161,8 +162,7 @@ public class ColumnsCreator {
     }
 
     private Column createConditionColumnWithOrGroup(Map<Integer, List<Column>> columnsWithOrGroup) {
-        Column resultColumn;
-        resultColumn = lit("1").equalTo("1");
+        Column resultColumn = null;
         for (int key : columnsWithOrGroup.keySet()) {
             List<Column> columnsList = columnsWithOrGroup.get(key);
             Column tempColumn = columnsList.remove(0);
@@ -170,6 +170,12 @@ public class ColumnsCreator {
             for (Column column : columnsList) {
                 tempColumn = tempColumn.or(column);
             }
+
+            if (resultColumn == null) {
+                resultColumn = tempColumn;
+                continue;
+            }
+
             resultColumn = resultColumn.and(tempColumn);
         }
         return resultColumn;

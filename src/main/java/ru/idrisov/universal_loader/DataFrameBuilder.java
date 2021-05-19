@@ -95,13 +95,13 @@ public class DataFrameBuilder {
     }
 
     private DataFrameBuilder addToDfWhereCondition(WherePlace place) {
-        List<Column> columnsForWhereBeforeJoin = columnsCreator.getColumnsForWhere(targetTable, place);
+        Map<Integer, List<Column>> columnsForWhereBeforeJoin = columnsCreator.getColumnsForWhereCondition(targetTable, place);
 
         if (columnsForWhereBeforeJoin.isEmpty()) {
             return this;
         }
 
-        Column columnForPreWhere = columnsCreator.getColumnFromColumnsList(columnsForWhereBeforeJoin);
+        Column columnForPreWhere = columnsCreator.getConditionColumnFromColumnsList(columnsForWhereBeforeJoin);
 
         currentDf = currentDf
                 .where(
@@ -113,8 +113,8 @@ public class DataFrameBuilder {
     public DataFrameBuilder addToDfJoins() {
         for (Join join : targetTable.getClass().getAnnotation(Joins.class).joins()) {
 
-            List<Column> columnsForJoin = columnsCreator.getColumnsForJoin(join);
-            Column columnForJoin = columnsCreator.getColumnFromColumnsList(columnsForJoin);
+            Map<Integer, List<Column>> columnsForJoinWithOrGroup = columnsCreator.getColumnsForJoinCondition(join);
+            Column columnForJoin = columnsCreator.getConditionColumnFromColumnsList(columnsForJoinWithOrGroup);
 
             currentDf = currentDf
                     .join(sourceDfs.get(getTableAliasName(join.joinedTable())),

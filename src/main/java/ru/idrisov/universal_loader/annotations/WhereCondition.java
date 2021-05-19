@@ -21,4 +21,5 @@ public @interface WhereCondition {
     String leftValueFunction() default "%s";
 
     WherePlace place();
+    int orGroup() default -1;
 }

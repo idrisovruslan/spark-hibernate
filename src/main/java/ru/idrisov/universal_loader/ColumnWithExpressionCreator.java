@@ -41,7 +41,7 @@ public class ColumnWithExpressionCreator {
 
     private String getRightValueWithCheckValueType(WhereCondition whereCondition) {
         String rightValue = whereCondition.stringRightValue();
-//TODO добавить потдержку сравнения с функциями колонок
+//TODO добавить поддержку сравнения с функциями колонок
 
 //        if (!whereCondition.columnRightValue().equals(ColumnValue.none)) {
 //            rightValue = getColumnForColumnValue(whereCondition);

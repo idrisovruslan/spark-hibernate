@@ -14,4 +14,6 @@ public @interface JoinCondition {
     String mainTableFunction() default "%s";
     String joinedTableField();
     String joinedTableFunction() default "%s";
+
+    int orGroup() default -1;
 }

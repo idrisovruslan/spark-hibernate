@@ -49,14 +49,14 @@ public class ColumnWithExpressionCreator {
     }
 
     private String getRightValueWithCheckValueType(WhereCondition whereCondition) {
-        String rightValue = whereCondition.stringRightValue();
+        String rightValue = "'" + whereCondition.stringRightValue() + "'";
 //TODO добавить поддержку сравнения с функциями колонок
 
 //        if (!whereCondition.columnRightValue().equals(ColumnValue.none)) {
 //            rightValue = getColumnForColumnValue(whereCondition);
 //        }
         if (whereCondition.arrayStringRightValue().length >= 1) {
-            rightValue = String.join(",", Arrays.stream(whereCondition.arrayStringRightValue()).map(x -> "\"" + x + "\"").toArray(String[]::new));
+            rightValue = String.join(",", Arrays.stream(whereCondition.arrayStringRightValue()).map(x -> "'" + x + "'").toArray(String[]::new));
         }
         return rightValue;
     }

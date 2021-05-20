@@ -111,6 +111,11 @@ public class DataFrameBuilder {
     }
 
     public DataFrameBuilder addToDfJoins() {
+
+        if (!targetTable.getClass().isAnnotationPresent(Joins.class)) {
+            return this;
+        }
+
         for (Join join : targetTable.getClass().getAnnotation(Joins.class).joins()) {
 
             Map<Integer, List<Column>> columnsForJoinWithOrGroup = columnsCreator.getColumnsForJoinCondition(join);

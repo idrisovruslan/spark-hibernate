@@ -9,10 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.idrisov.SparkTestConfig;
 import ru.idrisov.domain.entitys.tests.FirstSourceTable;
-import ru.idrisov.domain.entitys.tests.SecondSourceTable;
 import ru.idrisov.domain.entitys.tests.ThirdlyTargetTable;
 
-import static org.apache.spark.sql.functions.current_timestamp;
 import static org.apache.spark.sql.functions.lit;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static ru.idrisov.universal_loader.utils.TableUtils.readTable;
@@ -37,15 +35,15 @@ class ThirdlyNewProcessorTest {
         Dataset<Row> sourceDf1 = createRandomSingleRowDf(sparkSession, firstSourceTable)
                 .withColumn("src_accnt_lvl_1_code", lit("00000"))
                 .withColumn("src_accnt_sk", lit("321"))
-                .withColumn("src_user_name", lit("Женя"));
+                .withColumn("src_user_name", lit("Женяййй"));
         Dataset<Row> sourceDf2 = createRandomSingleRowDf(sparkSession, firstSourceTable)
                 .withColumn("src_accnt_lvl_1_code", lit("0409301000"))
                 .withColumn("src_accnt_sk", lit("321"))
-                .withColumn("src_user_name", lit("Миша"));
+                .withColumn("src_user_name", lit("Мишаййй"));
         Dataset<Row> sourceDf3 = createRandomSingleRowDf(sparkSession, firstSourceTable)
                 .withColumn("src_accnt_lvl_1_code", lit("0409301000"))
                 .withColumn("src_accnt_sk", lit("00000"))
-                .withColumn("src_user_name", lit("Женя"));
+                .withColumn("src_user_name", lit("Женяййй"));
         Dataset<Row> sourceDf = sourceDf1.union(sourceDf2).union(sourceDf3);
         createTable(sourceDf, firstSourceTable);
 

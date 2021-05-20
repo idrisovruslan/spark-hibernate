@@ -12,11 +12,6 @@ import ru.idrisov.domain.entitys.tests.FirstSourceTable;
 import ru.idrisov.domain.entitys.tests.FirstTargetTable;
 import ru.idrisov.domain.entitys.tests.SecondSourceTable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import static org.apache.spark.sql.functions.current_timestamp;
 import static org.apache.spark.sql.functions.lit;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -72,22 +67,5 @@ class FirstNewProcessorTest {
         Dataset<Row> targetDf = readTable(sparkSession, firstTargetTable);
         targetDf.show();
         assertEquals(2, targetDf.count());
-    }
-
-    @Test
-    void defaultTest2() {
-        Map<Integer, List<String>> map = new HashMap<>();
-        List<String> list = new ArrayList<>();
-        list.add("1");
-        list.add("2");
-        list.add("3");
-        map.put(1, list);
-        map.get(1).add("4");
-        map.get(1).add("5");
-        map.get(1).add("6");
-
-        for (String a : map.get(1)) {
-            System.out.println(a);
-        }
     }
 }

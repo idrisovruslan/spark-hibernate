@@ -36,8 +36,8 @@ public class FirstTargetTable implements TableSpark {
 
     @PartitionField
     @SourceTableField(sourceTable = FirstSourceTable.class, sourceFieldName = "src_accnt_lvl_1_code",
-            //conditions = {@WhereCondition(type = ConditionFunctionType.IS_IN, leftValueFunction = "substring(%s, 0, 7)", stringRightValue = rightValue2, place = WherePlace.AFTER_JOIN)})
-            conditions = {@WhereCondition(type = ConditionType.IS_IN, leftValueFunction = "substring(%s, 0, 7)", arrayStringRightValue = {"0409301", "0409302"}, place = WherePlace.AFTER_JOIN)})
+            conditions = {@WhereCondition(type = ConditionType.IS_IN, leftValueFunction = "substring(%s, 0, 7)", stringRightValue = rightValue, place = WherePlace.AFTER_JOIN)})
+            //conditions = {@WhereCondition(type = ConditionType.IS_IN, leftValueFunction = "substring(%s, 0, 7)", arrayStringRightValue = {"0409301", "0409302"}, place = WherePlace.AFTER_JOIN)})
     String accnt_lvl_1_code;
 
     @SourceTableField(sourceTable = FirstSourceTable.class, sourceFieldName = "src_user_name")
@@ -56,5 +56,5 @@ public class FirstTargetTable implements TableSpark {
     @SourceTableField(sourceTable = SecondSourceTable.class, sourceFieldName = "src_second_field")
     String trg_from_second_table_field;
 
-    private static final String rightValue2 = "\"0409301\",\"0409302\"";
+    private static final String rightValue = "'0409301','0409302'";
 }

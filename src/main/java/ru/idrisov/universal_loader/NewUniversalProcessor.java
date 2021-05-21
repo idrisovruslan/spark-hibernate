@@ -21,7 +21,10 @@ public class NewUniversalProcessor {
                 .addToDfWhereConditionAfterJoin()
                 .addToDfAggregateFunctions()
                 .addToDfGroupByWithAggFunctions()
+
+                //TODO проверить работоспособность
                 .addToDfWhereConditionAfterGroupBy()
+
                 .addToDfDistinct()
                 .createResultTargetDf()
                 .getResultTargetDf();

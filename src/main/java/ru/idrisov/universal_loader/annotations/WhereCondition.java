@@ -17,9 +17,10 @@ public @interface WhereCondition {
     String stringRightValue() default "";
     ColumnValue columnRightValue() default ColumnValue.none;
     String[] arrayStringRightValue() default {};
+    String cycleRightValue() default "";
 
     String leftValueFunction() default "%s";
 
-    WherePlace place();
+    WherePlace place() default WherePlace.BEGINNING;
     int orGroup() default -1;
 }

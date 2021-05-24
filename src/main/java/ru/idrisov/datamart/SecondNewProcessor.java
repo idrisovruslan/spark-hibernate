@@ -14,7 +14,7 @@ public class SecondNewProcessor implements DatamartProcessor {
 
     @Override
     public void process() {
-        newUniversalProcessor.fillTable(secondTargetTable);
+        newUniversalProcessor.fillDfAndSaveToTable(secondTargetTable);
     }
 
     @Override

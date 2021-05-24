@@ -14,8 +14,14 @@ public class NewUniversalProcessor {
 
     final DataFrameBuilder dataFrameBuilder;
 
-    public void fillTable(TableSpark targetTable) {
-        Dataset<Row> targetDf = dataFrameBuilder.initBuilder(targetTable)
+    public void fillDfAndSaveToTable(TableSpark targetTable) {
+        Dataset<Row> targetDf = getFilledDf(targetTable);
+        saveAsTable(targetDf, targetTable);
+    }
+
+    public Dataset<Row> getFilledDf(TableSpark targetTable) {
+        return dataFrameBuilder.initBuilder(targetTable)
+                .addToDfWhereConditionOnStart()
                 .addToDfWhereConditionBeforeJoin()
                 .addToDfJoins()
                 .addToDfWhereConditionAfterJoin()
@@ -28,7 +34,5 @@ public class NewUniversalProcessor {
                 .addToDfDistinct()
                 .createResultTargetDf()
                 .getResultTargetDf();
-
-        saveAsTable(targetDf, targetTable);
     }
 }

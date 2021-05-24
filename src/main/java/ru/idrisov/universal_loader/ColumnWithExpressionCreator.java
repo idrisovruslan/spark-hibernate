@@ -48,10 +48,14 @@ public class ColumnWithExpressionCreator {
         return expr(String.format(whereCondition.type().getConditionFunction(), leftValueWithFunction, rightValue));
     }
 
+    //TODO переписать чтоб было збс
     private String getRightValueWithCheckValueType(WhereCondition whereCondition) {
-        String rightValue = "'" + whereCondition.stringRightValue() + "'";
-        if (whereCondition.stringRightValue().charAt(0) == '\'') {
-            rightValue = whereCondition.stringRightValue();
+
+        if (!whereCondition.stringRightValue().equals("")) {
+            if (whereCondition.stringRightValue().charAt(0) == '\'') {
+                return whereCondition.stringRightValue();
+            }
+            return "'" + whereCondition.stringRightValue() + "'";
         }
 
 //TODO добавить поддержку сравнения с функциями колонок
@@ -59,10 +63,11 @@ public class ColumnWithExpressionCreator {
 //        if (!whereCondition.columnRightValue().equals(ColumnValue.none)) {
 //            rightValue = getColumnForColumnValue(whereCondition);
 //        }
+
         if (whereCondition.arrayStringRightValue().length >= 1) {
-            rightValue = String.join(",", Arrays.stream(whereCondition.arrayStringRightValue()).map(x -> "'" + x + "'").toArray(String[]::new));
+            return String.join(",", Arrays.stream(whereCondition.arrayStringRightValue()).map(x -> "'" + x + "'").toArray(String[]::new));
         }
-        return rightValue;
+        throw new RuntimeException("Правое значение не обработано");
     }
 
     private Column getColumnForColumnValue(WhereCondition whereCondition) {

@@ -80,6 +80,9 @@ public class DataFrameBuilder {
         currentDf = sourceDf;
     }
 
+    public DataFrameBuilder addToDfWhereConditionOnStart() {
+        return addToDfWhereCondition(WherePlace.BEGINNING);
+    }
 
     public DataFrameBuilder addToDfWhereConditionBeforeJoin() {
         return addToDfWhereCondition(WherePlace.BEFORE_JOIN);

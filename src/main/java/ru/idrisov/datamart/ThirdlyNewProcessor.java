@@ -2,7 +2,6 @@ package ru.idrisov.datamart;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.idrisov.domain.entitys.tests.FirstTargetTable;
 import ru.idrisov.domain.entitys.tests.ThirdlyTargetTable;
 import ru.idrisov.universal_loader.NewUniversalProcessor;
 
@@ -15,7 +14,7 @@ public class ThirdlyNewProcessor implements DatamartProcessor {
 
     @Override
     public void process() {
-        newUniversalProcessor.fillTable(thirdlyTargetTable);
+        newUniversalProcessor.fillDfAndSaveToTable(thirdlyTargetTable);
     }
 
     @Override

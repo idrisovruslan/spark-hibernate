@@ -1,6 +1,7 @@
 package ru.idrisov.universal_loader.enums;
 
 public enum WherePlace {
+    BEGINNING,
     BEFORE_JOIN,
     AFTER_JOIN,
 

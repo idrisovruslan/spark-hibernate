@@ -14,7 +14,7 @@ public class HubAcctProcessor implements DatamartProcessor {
 
     @Override
     public void process() {
-        newUniversalProcessor.fillTable(hubAcctTable);
+        newUniversalProcessor.fillDfAndSaveToTable(hubAcctTable);
     }
 
     @Override

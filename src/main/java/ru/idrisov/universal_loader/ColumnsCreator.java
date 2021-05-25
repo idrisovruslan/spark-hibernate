@@ -41,7 +41,7 @@ public class ColumnsCreator {
                 })
                 .forEach(field -> {
                     SourceTableField sourceTableInfo = field.getAnnotation(SourceTableField.class);
-                    fillMapWithOrGroup(place, columnsForWhereWithOrGroup, sourceTableInfo);
+                    fillMapWithColumnsWithOrGroup(place, columnsForWhereWithOrGroup, sourceTableInfo);
                 });
     }
 
@@ -49,12 +49,10 @@ public class ColumnsCreator {
         Arrays.stream(targetTable.getClass().getAnnotation(WhereConditions.class).conditionsFields())
                 .filter(conditionsFieldsInfo -> Arrays.stream(conditionsFieldsInfo.conditions())
                         .anyMatch(whereCondition -> whereCondition.place().equals(place)))
-                .forEach(conditionsFieldsInfo -> {
-                    fillMapWithOrGroup(place, columnsForWhereWithOrGroup, conditionsFieldsInfo);
-                });
+                .forEach(conditionsFieldsInfo -> fillMapWithColumnsWithOrGroup(place, columnsForWhereWithOrGroup, conditionsFieldsInfo));
     }
 
-    private void fillMapWithOrGroup(WherePlace place, Map<Integer, List<Column>> columnsForWhereWithOrGroup, SourceTableField sourceTableInfo) {
+    private void fillMapWithColumnsWithOrGroup(WherePlace place, Map<Integer, List<Column>> columnsForWhereWithOrGroup, SourceTableField sourceTableInfo) {
         WhereCondition[] whereConditions = sourceTableInfo.conditions();
 
         Arrays.stream(whereConditions)

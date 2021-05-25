@@ -38,7 +38,7 @@ import java.sql.Timestamp;
 })
 @Cycle(table = HubSyntAcct.class, column = "num", cycleName = "MAIN",
         conditions = {@WhereCondition(stringRightValue = "LVL1")})
-@Cycle(table = HubSyntAcct.class, column = "num", cycleName = "NOT_MAIN :)",
+@Cycle(table = HubSyntAcct.class, column = "num", cycleName = "NESTED",
         conditions = {@WhereCondition(stringRightValue = "LVL2"),
                 @WhereCondition(leftValueFunction = "substring(%s, 1, 3)", cycleRightValue = "MAIN")})
 @Distinct

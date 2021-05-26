@@ -1,17 +1,19 @@
 package ru.idrisov.universal_loader;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
-@RequiredArgsConstructor
 @Getter
 public class CycleValue {
+    final String mainCycleName;
     final String mainCycleValue;
     @Setter
     List<CycleValue> nestedCycleValue;
+
+    public CycleValue(String mainCycleName, String mainCycleValue) {
+        this.mainCycleName = mainCycleName;
+        this.mainCycleValue = mainCycleValue;
+    }
 }

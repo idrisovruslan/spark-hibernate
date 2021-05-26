@@ -1,24 +1,24 @@
 package ru.idrisov.universal_loader;
 
-import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.idrisov.universal_loader.entitys.TableSpark;
 
 import java.util.List;
 
 @Service
-//TODO Я хз нахер он сейчас нужен, но пусть уж полежит, пока не придумаю :)
+@RequiredArgsConstructor
 public class CycleValuesHolder {
-    CycleValuesCreator cycleValuesCreator;
+
+    final CycleValuesCreator cycleValuesCreator;
+
     List<CycleValue> cycleValues;
 
-    @Getter
-    String currentMainCycleValue;
-    @Getter
-    String currentNestedCycleValue;
+    CycleValue currentCycleValue;
 
-    public CycleValuesHolder(CycleValuesCreator cycleValuesCreator) {
-//        this.cycleValuesCreator = cycleValuesCreator;
-//        cycleValues = this.cycleValuesCreator.getCycleValuesList();
+
+    void init(Class<? extends TableSpark> tableInfo) {
+        cycleValues = cycleValuesCreator.getCycleValuesList(tableInfo);
     }
 
 

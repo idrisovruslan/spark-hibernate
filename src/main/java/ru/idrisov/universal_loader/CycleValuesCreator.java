@@ -65,9 +65,10 @@ public class CycleValuesCreator {
 
         //TODO Необходимо заполинть алгоритмом из аннотации Cycle
         List<String> cycleValuesList = new ArrayList<>();
+        String cycleName = cycle.cycleName();
 
         for (String cycleValueString : cycleValuesList) {
-            CycleValue cycleValue = new CycleValue(cycleValueString);
+            CycleValue cycleValue = new CycleValue(cycleName, cycleValueString);
 
             List<CycleValue> nestedCycleValues = null;
             if (!cycle.nestedCycleName().equals("")) {

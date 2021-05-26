@@ -12,5 +12,5 @@ public @interface Cycle {
     String column();
     String cycleName();
     WhereCondition[] conditions() default {};
-    String mainCycle() default "";
+    String nestedCycleName() default "";
 }

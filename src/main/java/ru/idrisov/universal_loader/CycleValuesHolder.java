@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+//TODO Я хз нахер он сейчас нужен, но пусть уж полежит, пока не придумаю :)
 public class CycleValuesHolder {
     CycleValuesCreator cycleValuesCreator;
     List<CycleValue> cycleValues;
@@ -16,8 +17,8 @@ public class CycleValuesHolder {
     String currentNestedCycleValue;
 
     public CycleValuesHolder(CycleValuesCreator cycleValuesCreator) {
-        this.cycleValuesCreator = cycleValuesCreator;
-        cycleValues = this.cycleValuesCreator.getCycleValuesList();
+//        this.cycleValuesCreator = cycleValuesCreator;
+//        cycleValues = this.cycleValuesCreator.getCycleValuesList();
     }
 
 

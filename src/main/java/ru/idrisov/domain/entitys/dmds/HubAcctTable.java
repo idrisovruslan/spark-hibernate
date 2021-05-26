@@ -36,9 +36,9 @@ import java.sql.Timestamp;
                 //TODO Добавить поддержку подстановки своих значений
                 conditions = {@WhereCondition(type = ConditionType.IS_IN, arrayStringRightValue = "0409302", place = WherePlace.AFTER_JOIN)})
 })
-@Cycle(table = HubSyntAcct.class, column = "num", cycleName = "MAIN",
+@Cycle(table = HubSyntAcct.class, column = "num", cycleName = "MAIN", nestedCycleName = "NESTED",
         conditions = {@WhereCondition(stringRightValue = "LVL1")})
-@Cycle(table = HubSyntAcct.class, column = "num", cycleName = "NESTED", mainCycle = "MAIN",
+@Cycle(table = HubSyntAcct.class, column = "num", cycleName = "NESTED",
         conditions = {@WhereCondition(stringRightValue = "LVL2"),
                 @WhereCondition(leftValueFunction = "substring(%s, 1, 3)", cycleRightValue = "MAIN")})
 @Distinct

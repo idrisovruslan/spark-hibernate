@@ -15,5 +15,6 @@ public class CycleValue {
     public CycleValue(String mainCycleName, String mainCycleValue) {
         this.mainCycleName = mainCycleName;
         this.mainCycleValue = mainCycleValue;
+        nestedCycleValue = null;
     }
 }

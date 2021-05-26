@@ -70,11 +70,10 @@ public class CycleValuesCreator {
         for (String cycleValueString : cycleValuesList) {
             CycleValue cycleValue = new CycleValue(cycleName, cycleValueString);
 
-            List<CycleValue> nestedCycleValues = null;
             if (!cycle.nestedCycleName().equals("")) {
-                nestedCycleValues = getCycleValuesListWithRecursion(tableInfo, getNestedCycle(tableInfo, cycle));
+                List<CycleValue> nestedCycleValues = getCycleValuesListWithRecursion(tableInfo, getNestedCycle(tableInfo, cycle));
+                cycleValue.setNestedCycleValue(nestedCycleValues);
             }
-            cycleValue.setNestedCycleValue(nestedCycleValues);
 
             cycleValues.add(cycleValue);
         }

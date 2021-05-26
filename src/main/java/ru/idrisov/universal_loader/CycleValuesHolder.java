@@ -9,11 +9,16 @@ import java.util.List;
 public class CycleValuesHolder {
     CycleValuesCreator cycleValuesCreator;
     List<CycleValue> cycleValues;
+
     @Getter
-    CycleValue currentCycleValue;
+    String currentMainCycleValue;
+    @Getter
+    String currentNestedCycleValue;
 
     public CycleValuesHolder(CycleValuesCreator cycleValuesCreator) {
         this.cycleValuesCreator = cycleValuesCreator;
         cycleValues = this.cycleValuesCreator.getCycleValuesList();
     }
+
+
 }

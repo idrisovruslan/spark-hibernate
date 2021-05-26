@@ -10,6 +10,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Getter
 public class CycleValue {
+    //TODO КОмпановщик(рекурсивно)
     final String mainCycleValue;
-    final List<String> nestedCycleValue;
+    final List<CycleValue> nestedCycleValue;
 }

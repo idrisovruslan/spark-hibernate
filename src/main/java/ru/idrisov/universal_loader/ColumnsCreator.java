@@ -37,9 +37,9 @@ public class ColumnsCreator {
 
         SourceTableField sourceTableInfo = cycle.sourceTableField();
 
-        StringBuilder columnName = new StringBuilder(getColumnName(sourceTableInfo));
+        String columnName = getColumnName(sourceTableInfo);
 
-        Column col = expr(String.format(sourceTableInfo.function(), columnName)).as(columnName.toString());
+        Column col = expr(String.format(sourceTableInfo.function(), columnName)).as(columnName);
 
         listForSelect.add(col);
         return listForSelect;

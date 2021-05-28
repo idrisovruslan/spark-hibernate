@@ -19,6 +19,32 @@ public class ColumnsCreator {
 
     final ColumnWithExpressionCreator columnWithExpressionCreator;
 
+    public Map<Integer, List<Column>> getColumnsForWhereCondition(Cycle cycle) {
+
+        Map<Integer, List<Column>> columnsForWhereWithOrGroup = new HashMap<>();
+        getColumnsForWhereConditionFromCycle(cycle, columnsForWhereWithOrGroup);
+
+        return columnsForWhereWithOrGroup;
+    }
+
+    private void getColumnsForWhereConditionFromCycle(Cycle cycle, Map<Integer, List<Column>> columnsForWhereWithOrGroup) {
+        SourceTableField sourceTableInfo = cycle.sourceTableField();
+        fillMapWithColumnsWithOrGroup(WherePlace.BEGINNING, columnsForWhereWithOrGroup, sourceTableInfo);
+    }
+
+    public List<Column> getColumnsForSelect(Cycle cycle) {
+        List<Column> listForSelect = new ArrayList<>();
+
+        SourceTableField sourceTableInfo = cycle.sourceTableField();
+
+        StringBuilder columnName = new StringBuilder(getColumnName(sourceTableInfo));
+
+        Column col = expr(String.format(sourceTableInfo.function(), columnName)).as(columnName.toString());
+
+        listForSelect.add(col);
+        return listForSelect;
+    }
+
     public Map<Integer, List<Column>> getColumnsForWhereCondition(TableSpark targetTable, WherePlace place) {
 
         Map<Integer, List<Column>> columnsForWhereWithOrGroup = new HashMap<>();

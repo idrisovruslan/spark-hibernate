@@ -11,6 +11,8 @@ import ru.idrisov.universal_loader.entitys.TableSpark;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class TableUtils {
     private static final String DEFAULT_FORMAT = "hive";
@@ -18,7 +20,11 @@ public class TableUtils {
     private static final String ALIAS_SEPARATOR = "_______";
 
     public static Dataset<Row> readTable(SparkSession sparkSession, TableSpark tableSpark) {
-        return readTable(sparkSession, getTableFullName(tableSpark));
+        return readTable(sparkSession, tableSpark.getClass());
+    }
+
+    public static Dataset<Row> readTable(SparkSession sparkSession, Class<? extends TableSpark> tableSparkClazz) {
+        return readTable(sparkSession, getTableFullName(tableSparkClazz));
     }
 
     private static Dataset<Row> readTable(SparkSession sparkSession, String tableFullName) {
@@ -71,5 +77,18 @@ public class TableUtils {
     public static String getColumnName(Class<? extends TableSpark> tableSpark, String fieldName) {
         String sourceTableName = getTableAliasName(tableSpark);
         return sourceTableName + "." + fieldName;
+    }
+
+    public static <T> List<T> mapToList(Dataset<Row> df, String fieldName) {
+        return mapSingleColumnDfToList(
+                df.select(fieldName)
+        );
+    }
+
+    public static <T> List<T> mapSingleColumnDfToList(Dataset<Row> df) {
+        return df
+                .collectAsList().stream()
+                .map(row -> row.<T>getAs(0))
+                .collect(Collectors.toList());
     }
 }

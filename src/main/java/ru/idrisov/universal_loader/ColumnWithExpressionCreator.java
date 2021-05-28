@@ -17,11 +17,11 @@ import static ru.idrisov.universal_loader.utils.TableUtils.getColumnName;
 @Component
 public class ColumnWithExpressionCreator {
 
-    public Column getColumnWithExpressionFromWhereCondition(SourceTableField sourceTableInfo, WhereCondition whereCondition) {
+    public Column getColumnWithExpressionFromWhereCondition(SourceTableField sourceTableFieldInfo, WhereCondition whereCondition) {
         if (rightValueIsEmpty(whereCondition)) {
-            return getColumnWithExpressionWithoutValue(sourceTableInfo, whereCondition);
+            return getColumnWithExpressionWithoutValue(sourceTableFieldInfo, whereCondition);
         }
-        return getColumnWithExpressionValue(sourceTableInfo, whereCondition);
+        return getColumnWithExpressionValue(sourceTableFieldInfo, whereCondition);
     }
 
     public Column getColumnWithExpressionFromJoinCondition(Join join, JoinCondition joinCondition) {

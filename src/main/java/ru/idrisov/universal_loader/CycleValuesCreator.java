@@ -1,6 +1,8 @@
 package ru.idrisov.universal_loader;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.spark.sql.Dataset;
+import org.apache.spark.sql.Row;
 import org.springframework.stereotype.Service;
 import ru.idrisov.universal_loader.annotations.Cycle;
 import ru.idrisov.universal_loader.annotations.Cycles;
@@ -11,9 +13,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static ru.idrisov.universal_loader.utils.TableUtils.getColumnName;
+import static ru.idrisov.universal_loader.utils.TableUtils.mapToList;
+
 @Service
 @RequiredArgsConstructor
 public class CycleValuesCreator {
+
+    CycleDfCreator cycleDfCreator;
 
     public List<CycleValue> getCycleValuesList(Class<? extends TableSpark> tableInfo) {
 
@@ -63,8 +70,9 @@ public class CycleValuesCreator {
 
         List<CycleValue> cycleValues = new ArrayList<>();
 
-        //TODO Необходимо заполинть алгоритмом из аннотации Cycle
-        List<String> cycleValuesList = new ArrayList<>();
+        Dataset<Row> cycleValuesDf = cycleDfCreator.getCycleDf(cycle);
+        List<String> cycleValuesList = mapToList(cycleValuesDf, getColumnName(tableInfo, cycle.sourceTableField().sourceFieldName()));
+
         String cycleName = cycle.cycleName();
 
         for (String cycleValueString : cycleValuesList) {

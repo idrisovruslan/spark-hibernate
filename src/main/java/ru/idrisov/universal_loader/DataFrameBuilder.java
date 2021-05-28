@@ -6,7 +6,6 @@ import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import ru.idrisov.universal_loader.annotations.*;
@@ -23,7 +22,6 @@ import static ru.idrisov.universal_loader.utils.TableUtils.readTable;
 @RequiredArgsConstructor
 public class DataFrameBuilder {
 
-    private final ApplicationContext applicationContext;
     private final SparkSession sparkSession;
     private final ColumnsCreator columnsCreator;
 
@@ -44,7 +42,7 @@ public class DataFrameBuilder {
         Map<String, Dataset<Row>> sourcesDfs = new HashMap<>();
         getSourceTables(targetTable).forEach(tableSparkClass -> {
             String tableAliasName = getTableAliasName(tableSparkClass);
-            Dataset<Row> sourceDf = readTable(sparkSession, applicationContext.getBean(tableSparkClass)).alias(tableAliasName);
+            Dataset<Row> sourceDf = readTable(sparkSession, tableSparkClass).alias(tableAliasName);
             sourcesDfs.put(tableAliasName, sourceDf);
         });
         return sourcesDfs;
@@ -98,17 +96,17 @@ public class DataFrameBuilder {
     }
 
     private DataFrameBuilder addToDfWhereCondition(WherePlace place) {
-        Map<Integer, List<Column>> columnsForWhereBeforeJoin = columnsCreator.getColumnsForWhereCondition(targetTable, place);
+        Map<Integer, List<Column>> columnsForWhere = columnsCreator.getColumnsForWhereCondition(targetTable, place);
 
-        if (columnsForWhereBeforeJoin.isEmpty()) {
+        if (columnsForWhere.isEmpty()) {
             return this;
         }
 
-        Column columnForPreWhere = columnsCreator.getConditionColumnFromColumnsMap(columnsForWhereBeforeJoin);
+        Column columnForWhere = columnsCreator.getConditionColumnFromColumnsMap(columnsForWhere);
 
         currentDf = currentDf
                 .where(
-                        columnForPreWhere
+                        columnForWhere
                 );
         return this;
     }

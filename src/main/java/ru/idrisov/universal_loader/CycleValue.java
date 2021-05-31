@@ -33,12 +33,16 @@ public class CycleValue {
             return null;
         }
 
-        if (nestedCycleValue.get(0).nestedCycleIsPresent()) {
-            return nestedCycleValue.get(0);
+        if (firstNestedCycleIsLastInHierarchy()) {
+            CycleValue result = nestedCycleValue.remove(0);
+            setProcessedFlag();
+            return result;
         }
-        CycleValue result = nestedCycleValue.remove(0);
-        setProcessedFlag();
-        return result;
+        return nestedCycleValue.get(0);
+    }
+
+    private Boolean firstNestedCycleIsLastInHierarchy() {
+        return !nestedCycleValue.get(0).nestedCycleIsPresent();
     }
 
     public Boolean nestedCycleIsPresent() {

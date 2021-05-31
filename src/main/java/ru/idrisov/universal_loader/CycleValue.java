@@ -16,7 +16,6 @@ public class CycleValue {
     @Setter
     private List<CycleValue> nestedCycleValue;
 
-    @Getter
     private Boolean processed = false;
 
     public CycleValue(String mainCycleName, String mainCycleValue) {

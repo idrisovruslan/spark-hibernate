@@ -23,13 +23,15 @@ public class CycleValuesHolder {
         cycleValues = cycleValuesCreator.getCycleValuesList(tableInfo);
     }
 
-    private Map<String, String> getNextValues(CycleValue cycleValue) {
+    private Map<String, String> getNextValues(CycleValue mainCycleValue) {
         Map<String, String> result = new HashMap<>();
-        result.put(cycleValue.getMainCycleName(), cycleValue.getMainCycleValue());
+        result.put(mainCycleValue.getMainCycleName(), mainCycleValue.getMainCycleValue());
+        CycleValue cycleValue = mainCycleValue;
 
-        while (cycleValue.nestedCycleIsPresent()) {
+        while (mainCycleValue.nestedCycleIsPresent()) {
             CycleValue tempCycleValue = cycleValue.getFirstNestedCycleValueAndRemoveIfLast();
             if (tempCycleValue == null) {
+                cycleValue = mainCycleValue;
                 continue;
             }
             cycleValue = tempCycleValue;

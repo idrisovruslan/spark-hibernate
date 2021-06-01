@@ -26,7 +26,7 @@ public class CycleValue {
 
     public CycleValue getFirstNestedCycleValueAndRemoveIfLast() {
         removeNestedCycleValueIfProcessed();
-        setProcessedFlag();
+        checkAndSetProcessedFlag();
 
         if (processed) {
             return null;
@@ -34,7 +34,7 @@ public class CycleValue {
 
         if (firstNestedCycleIsLastInHierarchy()) {
             CycleValue result = nestedCycleValue.remove(0);
-            setProcessedFlag();
+            checkAndSetProcessedFlag();
             return result;
         }
         return nestedCycleValue.get(0);
@@ -48,7 +48,7 @@ public class CycleValue {
         return nestedCycleValue != null;// && nestedCycleValue.size() != 0;
     }
 
-    public void setProcessedFlag() {
+    public void checkAndSetProcessedFlag() {
         if (nestedCycleValue.size() == 0) {
             processed = true;
         }

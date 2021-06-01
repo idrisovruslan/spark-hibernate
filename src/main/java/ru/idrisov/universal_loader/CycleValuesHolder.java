@@ -29,12 +29,14 @@ public class CycleValuesHolder {
         CycleValue cycleValue = mainCycleValue;
 
         while (mainCycleValue.nestedCycleIsPresent()) {
-            CycleValue tempCycleValue = cycleValue.getFirstNestedCycleValueAndRemoveIfLast();
-            if (tempCycleValue == null) {
+            cycleValue = cycleValue.getFirstNestedCycleValueAndRemoveIfLast();
+            //Так как обратная ссылка в иерархии не храниться, мы не можем вернуться
+            //назад по иерархии если значение обработанно, поэтому возвращаемся
+            //в начало иерархии после установки флага обработки
+            if (cycleValue == null) {
                 cycleValue = mainCycleValue;
                 continue;
             }
-            cycleValue = tempCycleValue;
 
             result.put(cycleValue.getMainCycleName(), cycleValue.getMainCycleValue());
         }

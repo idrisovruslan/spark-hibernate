@@ -37,11 +37,11 @@ public class CycleValuesHolder {
             //назад по иерархии если значение обработанно, поэтому возвращаемся
             //в начало иерархии после установки флага обработки
             if (cycleValue == null) {
-                cycleValue = mainCycleValue;
-                if (cycleValue.allNestedCycleProcessed()) {
+                if (mainCycleValue.allNestedCycleProcessed()) {
                     //TODO логика если mainCycleValue - процессед
                     System.out.println("всё прогнали");
                 }
+                cycleValue = mainCycleValue;
                 continue;
             }
 

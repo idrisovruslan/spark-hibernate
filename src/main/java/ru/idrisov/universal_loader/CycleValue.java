@@ -41,7 +41,7 @@ public class CycleValue {
     }
 
     public Boolean nestedCycleIsPresent() {
-        return nestedCycleValue != null;// && nestedCycleValue.size() != 0;
+        return nestedCycleValue != null;
     }
 
     public void checkAndSetProcessedFlag() {

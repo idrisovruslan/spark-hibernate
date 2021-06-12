@@ -16,6 +16,7 @@ public class CycleValue {
     @Setter
     private List<CycleValue> nestedCycleValue;
 
+    @Setter
     private Boolean processed = false;
 
     public CycleValue(String mainCycleName, String mainCycleValue) {
@@ -24,24 +25,19 @@ public class CycleValue {
         nestedCycleValue = null;
     }
 
-    public CycleValue getFirstNestedCycleValueAndRemoveIfLast() {
-        removeNestedCycleValueIfProcessed();
+    public CycleValue getFirstNotProcessedNestedCycleValue() {
         checkAndSetProcessedFlag();
 
         if (processed) {
             return null;
         }
 
-        if (firstNestedCycleIsLastInHierarchy()) {
-            CycleValue result = nestedCycleValue.remove(0);
-            checkAndSetProcessedFlag();
-            return result;
+        CycleValue resultCycleValue = nestedCycleValue.stream().filter(x -> !x.processed).findFirst().get();
+        if (!resultCycleValue.nestedCycleIsPresent()) {
+            resultCycleValue.setProcessed(true);
         }
-        return nestedCycleValue.get(0);
-    }
 
-    private Boolean firstNestedCycleIsLastInHierarchy() {
-        return !nestedCycleValue.get(0).nestedCycleIsPresent();
+         return resultCycleValue;
     }
 
     public Boolean nestedCycleIsPresent() {
@@ -49,14 +45,13 @@ public class CycleValue {
     }
 
     public void checkAndSetProcessedFlag() {
-        if (nestedCycleValue.size() == 0) {
+        if (allNestedCycleProcessed()) {
             processed = true;
         }
     }
 
-    public void removeNestedCycleValueIfProcessed() {
-        if (nestedCycleValue.get(0).processed) {
-            nestedCycleValue.remove(0);
-        }
+    public boolean allNestedCycleProcessed() {
+        return nestedCycleValue.stream().allMatch(x -> x.processed);
     }
+
 }

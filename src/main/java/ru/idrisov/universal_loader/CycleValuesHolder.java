@@ -22,7 +22,7 @@ public class CycleValuesHolder {
     //На момент работы CycleDfCreator currentCycleValue = null т.к. CycleValuesHolder
     // не проиницилизирован, но уже используеться.
     //TODO Придумай получше.
-    private Map<String, String> tempCycleValueForCycleDfCreator;
+    private Map<String, String> tempCycleValueForCycleDfCreator = new HashMap<>();
 
     //For tests
     @Getter(value = AccessLevel.PACKAGE)
@@ -40,24 +40,20 @@ public class CycleValuesHolder {
     }
 
     public void setNextCurrentCycleValue() {
-        if (allCycleValues.size() != 0) {
+        if (nextValuesIsPresent()) {
             currentCycleValue = allCycleValues.remove(0);
         }
     }
 
     public boolean nextValuesIsPresent() {
-        return allCycleValues.size() > 0;
+        return allCycleValues != null && allCycleValues.size() > 0;
     }
 
     public String getValue(String key) {
-        if (currentCycleValue.size() != 0) {
+        if (currentCycleValue != null && currentCycleValue.size() != 0) {
             return currentCycleValue.get(key);
         }
         return tempCycleValueForCycleDfCreator.get(key);
-    }
-
-    public boolean currentCycleValueIsPresent() {
-        return currentCycleValue != null;
     }
 
     //TODO Придумай нормальное название БЛЕАТЬ!

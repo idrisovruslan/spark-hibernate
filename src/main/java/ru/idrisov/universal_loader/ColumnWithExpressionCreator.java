@@ -37,6 +37,7 @@ public class ColumnWithExpressionCreator {
 
     private boolean rightValueIsEmpty(WhereCondition whereCondition) {
         return whereCondition.stringRightValue().equals("")
+                && whereCondition.cycleRightValue().equals("")
                 && whereCondition.columnRightValue().equals(ColumnValue.none)
                 && whereCondition.arrayStringRightValue().length == 0;
     }
@@ -48,8 +49,17 @@ public class ColumnWithExpressionCreator {
 
     private Column getColumnWithExpressionValue(SourceTableField sourceTableInfo, WhereCondition whereCondition) {
         String rightValue = getRightValueWithCheckValueType(whereCondition);
-        String leftValueWithFunction = String.format(whereCondition.leftValueFunction(), getColumnName(sourceTableInfo));
+        String leftValueWithFunction = getLeftValueWithFunction(sourceTableInfo, whereCondition);
         return expr(String.format(whereCondition.type().getConditionFunction(), leftValueWithFunction, rightValue));
+    }
+
+    private String getLeftValueWithFunction(SourceTableField sourceTableInfo, WhereCondition whereCondition) {
+        //TODO Подумать над более интуитивно понятным решением
+        if (whereCondition.leftFieldName().equals("")) {
+            return String.format(whereCondition.leftValueFunction(), getColumnName(sourceTableInfo));
+        }
+
+        return String.format(whereCondition.leftValueFunction(), getColumnName(sourceTableInfo.sourceTable(), whereCondition.leftFieldName()));
     }
 
     //TODO переписать чтоб было збс

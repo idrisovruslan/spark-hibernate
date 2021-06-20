@@ -47,9 +47,7 @@ class CycleValuesCreatorTest {
         createTable(sourceDf, hubSyntAcctTable);
 
         List<CycleValue> list = cycleValuesCreator.getCycleValuesList(hubAcctTable.getClass());
-        System.out.println(list.size());
-        assertEquals(0, list.size());
-
+        assertEquals(1, list.size());
     }
 
 }

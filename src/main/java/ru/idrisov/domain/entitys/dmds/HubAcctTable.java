@@ -37,10 +37,11 @@ import java.sql.Timestamp;
                 conditions = {@WhereCondition(type = ConditionType.IS_IN, arrayStringRightValue = "0409302", place = WherePlace.AFTER_JOIN)})
 })
 @Cycle(cycleName = "MAIN", nestedCycleName = "NESTED", sourceTableField = @SourceTableField(sourceTable = HubSyntAcctTable.class, sourceFieldName = "num",
-        conditions = {@WhereCondition(stringRightValue = "LVL1")}))
+        conditions = {@WhereCondition(leftFieldName = "syntacct_type", stringRightValue = "LVL1")}))
 @Cycle(cycleName = "NESTED", sourceTableField = @SourceTableField(sourceTable = HubSyntAcctTable.class, sourceFieldName = "num",
+        //TODO Подумать над более интуитивно понятным решением
         conditions = {@WhereCondition(leftFieldName = "syntacct_type", stringRightValue = "LVL2"),
-        @WhereCondition(leftFieldName = "syntacct_type", leftValueFunction = "substring(%s, 1, 3)", cycleRightValue = "MAIN")}))
+                      @WhereCondition(leftValueFunction = "substring(%s, 1, 3)", cycleRightValue = "MAIN")}))
 
 @Distinct
 public class HubAcctTable implements TableSpark {

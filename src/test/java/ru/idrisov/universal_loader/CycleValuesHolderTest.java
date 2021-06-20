@@ -6,15 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import ru.idrisov.SparkTestConfig;
-import ru.idrisov.universal_loader.entitys.TableSpark;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doReturn;
 
 @SpringBootTest(classes = SparkTestConfig.class)
 @Slf4j
@@ -30,24 +27,23 @@ class CycleValuesHolderTest {
     void getAllCycleValues() {
         List<CycleValue> cycleValues = new ArrayList<>();
         cycleValues.add(createFirstMainCycleValue());
-        doReturn(cycleValues).when(cycleValuesCreator).getCycleValuesList(any());
 
-        cycleValuesHolder.init(TableSpark.class);
+        cycleValuesHolder.init(cycleValues);
         List<Map<String, String>> one =  cycleValuesHolder.getAllCycleValues();
 
-        assertEquals(9, one.size());
+        assertEquals(8, one.size());
 
-        assertEquals("firstMain", one.get(0).get("mainCycleValue"));
-        assertEquals("firstNested", one.get(0).get("lvl1NestedCycleValue"));
-        assertEquals("firstFirstNested", one.get(0).get("lvl2NestedCycleValue"));
+        assertEquals("firstMain", cycleValuesHolder.getValue("mainCycleValue"));
+        assertEquals("firstNested", cycleValuesHolder.getValue("lvl1NestedCycleValue"));
+        assertEquals("firstFirstNested", cycleValuesHolder.getValue("lvl2NestedCycleValue"));
 
-        assertEquals("firstMain", one.get(3).get("mainCycleValue"));
-        assertEquals("secondNested", one.get(3).get("lvl1NestedCycleValue"));
-        assertEquals("firstSecondNested", one.get(3).get("lvl2NestedCycleValue"));
+        assertEquals("firstMain", one.get(2).get("mainCycleValue"));
+        assertEquals("secondNested", one.get(2).get("lvl1NestedCycleValue"));
+        assertEquals("firstSecondNested", one.get(2).get("lvl2NestedCycleValue"));
 
-        assertEquals("firstMain", one.get(8).get("mainCycleValue"));
-        assertEquals("thirdNested", one.get(8).get("lvl1NestedCycleValue"));
-        assertEquals("thirdThirdNested", one.get(8).get("lvl2NestedCycleValue"));
+        assertEquals("firstMain", one.get(7).get("mainCycleValue"));
+        assertEquals("thirdNested", one.get(7).get("lvl1NestedCycleValue"));
+        assertEquals("thirdThirdNested", one.get(7).get("lvl2NestedCycleValue"));
 
         for (Map<String, String> map : one) {
             for (String key : map.keySet()) {

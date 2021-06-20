@@ -37,6 +37,18 @@ class CycleValuesHolderTest {
 
         assertEquals(9, one.size());
 
+        assertEquals("firstMain", one.get(0).get("mainCycleValue"));
+        assertEquals("firstNested", one.get(0).get("lvl1NestedCycleValue"));
+        assertEquals("firstFirstNested", one.get(0).get("lvl2NestedCycleValue"));
+
+        assertEquals("firstMain", one.get(3).get("mainCycleValue"));
+        assertEquals("secondNested", one.get(3).get("lvl1NestedCycleValue"));
+        assertEquals("firstSecondNested", one.get(3).get("lvl2NestedCycleValue"));
+
+        assertEquals("firstMain", one.get(8).get("mainCycleValue"));
+        assertEquals("thirdNested", one.get(8).get("lvl1NestedCycleValue"));
+        assertEquals("thirdThirdNested", one.get(8).get("lvl2NestedCycleValue"));
+
         for (Map<String, String> map : one) {
             for (String key : map.keySet()) {
                 System.out.println(key + "   " + map.get(key));

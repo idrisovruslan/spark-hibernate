@@ -4,36 +4,43 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import ru.idrisov.SparkTestConfig;
+import ru.idrisov.universal_loader.entitys.TableSpark;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
+
 @SpringBootTest(classes = SparkTestConfig.class)
 @Slf4j
 class CycleValuesHolderTest {
+
+    @SpyBean
+    CycleValuesCreator cycleValuesCreator;
 
     @Autowired
     CycleValuesHolder cycleValuesHolder;
 
     @Test
-    void getNextValues() {
+    void getAllCycleValues() {
         List<CycleValue> cycleValues = new ArrayList<>();
         cycleValues.add(createFirstMainCycleValue());
-        cycleValuesHolder.setCycleValues(cycleValues);
-        Map<String, String> one =  cycleValuesHolder.getNextValues(cycleValues.get(0));
-        one =  cycleValuesHolder.getNextValues(cycleValues.get(0));
-        one =  cycleValuesHolder.getNextValues(cycleValues.get(0));
-        one =  cycleValuesHolder.getNextValues(cycleValues.get(0));
-        one =  cycleValuesHolder.getNextValues(cycleValues.get(0));
-        one =  cycleValuesHolder.getNextValues(cycleValues.get(0));
-        one =  cycleValuesHolder.getNextValues(cycleValues.get(0));
-        one =  cycleValuesHolder.getNextValues(cycleValues.get(0));
-        one =  cycleValuesHolder.getNextValues(cycleValues.get(0));
+        doReturn(cycleValues).when(cycleValuesCreator).getCycleValuesList(any());
 
-        for (String key : one.keySet()) {
-            System.out.println(key + "   " + one.get(key));
+        cycleValuesHolder.init(TableSpark.class);
+        List<Map<String, String>> one =  cycleValuesHolder.getAllCycleValues();
+
+        assertEquals(9, one.size());
+
+        for (Map<String, String> map : one) {
+            for (String key : map.keySet()) {
+                System.out.println(key + "   " + map.get(key));
+            }
         }
     }
 

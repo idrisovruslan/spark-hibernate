@@ -1,11 +1,12 @@
 package ru.idrisov.universal_loader;
 
-import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.springframework.stereotype.Service;
 import ru.idrisov.universal_loader.entitys.TableSpark;
+import ru.idrisov.universal_loader.exceptions.AllNestedCycleProcessedException;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,19 +15,40 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class CycleValuesHolder {
 
-    final CycleValuesCreator cycleValuesCreator;
+    private final CycleValuesCreator cycleValuesCreator;
 
-    @Setter(value = AccessLevel.PACKAGE)
-    List<CycleValue> cycleValues;
+    private List<CycleValue> cycleValues;
 
-    CycleValue currentCycleValue;
+    @Getter
+    private List<Map<String, String>> allCycleValues;
 
 
     public void init(Class<? extends TableSpark> tableInfo) {
         cycleValues = cycleValuesCreator.getCycleValuesList(tableInfo);
+        allCycleValues = fillListWithAllCycleValues();
     }
 
-    Map<String, String> getNextValues(CycleValue mainCycleValue) {
+    List<Map<String, String>> fillListWithAllCycleValues() {
+        List<Map<String, String>> result = new ArrayList<>();
+
+        //TODO напиши нормально БЛЕАТЬ!
+        for (CycleValue cycleValue : cycleValues) {
+            while (true) {
+                try {
+                    result.add(getNextValues(cycleValue));
+                } catch (AllNestedCycleProcessedException e) {
+                    break;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    //TODO заменить <String, String> на объект(пока хз как, из за то го что по сути будет
+    // дублироваться объект CycleValue только без ссылок, как вариант
+    // создать объект и использовать его в CycleValue)
+    private Map<String, String> getNextValues(CycleValue mainCycleValue) throws AllNestedCycleProcessedException {
         Map<String, String> result = new HashMap<>();
         result.put(mainCycleValue.getMainCycleName(), mainCycleValue.getMainCycleValue());
         CycleValue cycleValue = mainCycleValue;
@@ -38,8 +60,7 @@ public class CycleValuesHolder {
             //в начало иерархии после установки флага обработки
             if (cycleValue == null) {
                 if (mainCycleValue.allNestedCycleProcessed()) {
-                    //TODO логика если mainCycleValue - процессед
-                    System.out.println("всё прогнали");
+                    throw new AllNestedCycleProcessedException("Всё прогнали");
                 }
                 cycleValue = mainCycleValue;
                 continue;

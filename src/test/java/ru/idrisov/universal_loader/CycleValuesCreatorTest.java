@@ -48,6 +48,11 @@ class CycleValuesCreatorTest {
 
         List<CycleValue> list = cycleValuesCreator.getCycleValuesList(hubAcctTable.getClass());
         assertEquals(1, list.size());
+        assertEquals("MAIN", list.get(0).getMainCycleName());
+        assertEquals("040", list.get(0).getMainCycleValue());
+        CycleValue nested = list.get(0).getFirstNotProcessedNestedCycleValue();
+        assertEquals("NESTED", nested.getMainCycleName());
+        assertEquals("04093", nested.getMainCycleValue());
     }
 
 }

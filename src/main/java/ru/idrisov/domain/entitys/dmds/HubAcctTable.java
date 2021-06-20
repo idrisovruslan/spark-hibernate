@@ -36,11 +36,11 @@ import java.sql.Timestamp;
                 //TODO Добавить поддержку подстановки своих значений
                 conditions = {@WhereCondition(type = ConditionType.IS_IN, arrayStringRightValue = "0409302", place = WherePlace.AFTER_JOIN)})
 })
-@Cycle(cycleName = "MAIN", nestedCycleName = "NESTED", sourceTableField = @SourceTableField(sourceTable = HubSyntAcct.class, sourceFieldName = "num",
+@Cycle(cycleName = "MAIN", nestedCycleName = "NESTED", sourceTableField = @SourceTableField(sourceTable = HubSyntAcctTable.class, sourceFieldName = "num",
         conditions = {@WhereCondition(stringRightValue = "LVL1")}))
-@Cycle(cycleName = "NESTED", sourceTableField = @SourceTableField(sourceTable = HubSyntAcct.class, sourceFieldName = "num",
-        conditions = {@WhereCondition(stringRightValue = "LVL2"),
-        @WhereCondition(leftValueFunction = "substring(%s, 1, 3)", cycleRightValue = "MAIN")}))
+@Cycle(cycleName = "NESTED", sourceTableField = @SourceTableField(sourceTable = HubSyntAcctTable.class, sourceFieldName = "num",
+        conditions = {@WhereCondition(leftFieldName = "syntacct_type", stringRightValue = "LVL2"),
+        @WhereCondition(leftFieldName = "syntacct_type", leftValueFunction = "substring(%s, 1, 3)", cycleRightValue = "MAIN")}))
 
 @Distinct
 public class HubAcctTable implements TableSpark {

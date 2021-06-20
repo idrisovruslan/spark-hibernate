@@ -73,7 +73,8 @@ public class CycleValuesCreator {
         List<CycleValue> cycleValues = new ArrayList<>();
 
         Dataset<Row> cycleValuesDf = cycleDfCreator.getCycleDf(cycle);
-        List<String> cycleValuesList = mapToList(cycleValuesDf, getColumnName(tableInfo, cycle.sourceTableField().sourceFieldName()));
+        String columnName = "`" + getColumnName(cycle.sourceTableField().sourceTable(), cycle.sourceTableField().sourceFieldName()) + "`";
+        List<String> cycleValuesList = mapToList(cycleValuesDf, columnName);
 
         String cycleName = cycle.cycleName();
 

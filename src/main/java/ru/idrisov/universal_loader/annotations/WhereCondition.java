@@ -20,6 +20,7 @@ public @interface WhereCondition {
     String cycleRightValue() default "";
 
     String leftValueFunction() default "%s";
+    String leftFieldName() default "";
 
     WherePlace place() default WherePlace.BEGINNING;
     int orGroup() default -1;

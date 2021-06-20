@@ -4,7 +4,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.idrisov.universal_loader.entitys.TableSpark;
 import ru.idrisov.universal_loader.exceptions.AllNestedCycleProcessedException;
 
 import java.util.ArrayList;
@@ -15,8 +14,6 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class CycleValuesHolder {
-
-    private final CycleValuesCreator cycleValuesCreator;
 
     private List<CycleValue> cycleValues;
 
@@ -31,12 +28,12 @@ public class CycleValuesHolder {
     @Getter(value = AccessLevel.PACKAGE)
     private List<Map<String, String>> allCycleValues;
 
-    public void init(Class<? extends TableSpark> tableInfo) {
-        cycleValues = cycleValuesCreator.getCycleValuesList(tableInfo);
-
+    public void init(List<CycleValue> cycleValues) {
         if (cycleValues == null) {
             return;
         }
+
+        this.cycleValues = cycleValues;
 
         allCycleValues = fillListWithAllCycleValues();
         setNextCurrentCycleValue();

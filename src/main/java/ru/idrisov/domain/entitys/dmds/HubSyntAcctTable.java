@@ -13,7 +13,7 @@ import java.sql.Timestamp;
 @Component
 @FieldDefaults(level= AccessLevel.PUBLIC)
 @EntitySpark(tableSchema = TableSchema.Schema.CUSTOM_FIN_FSO_DMDS, tableName = "hub_synt_acct", filling = false)
-public class HubSyntAcct implements TableSpark {
+public class HubSyntAcctTable implements TableSpark {
     String syntacct_sk;
     Timestamp open_dt;
     Timestamp close_dt;

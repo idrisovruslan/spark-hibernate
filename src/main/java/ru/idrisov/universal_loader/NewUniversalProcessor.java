@@ -6,17 +6,21 @@ import org.apache.spark.sql.Row;
 import org.springframework.stereotype.Service;
 import ru.idrisov.universal_loader.entitys.TableSpark;
 
+import java.util.List;
+
 import static ru.idrisov.universal_loader.utils.TableUtils.saveAsTable;
 
 @Service
 @RequiredArgsConstructor
 public class NewUniversalProcessor {
 
-    final DataFrameBuilder dataFrameBuilder;
-    final CycleValuesHolder cycleValuesHolder;
+    private final DataFrameBuilder dataFrameBuilder;
+    private final CycleValuesHolder cycleValuesHolder;
+    private final CycleValuesCreator cycleValuesCreator;
 
     public void fillDfAndSaveToTable(TableSpark targetTable) {
-        cycleValuesHolder.init(targetTable.getClass());
+        List<CycleValue>  cycleValues = cycleValuesCreator.getCycleValuesList(targetTable.getClass());
+        cycleValuesHolder.init(cycleValues);
         do {
             Dataset<Row> targetDf = getFilledDf(targetTable);
             saveAsTable(targetDf, targetTable);

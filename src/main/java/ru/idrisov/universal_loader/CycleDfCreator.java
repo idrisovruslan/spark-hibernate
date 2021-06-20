@@ -11,6 +11,7 @@ import ru.idrisov.universal_loader.annotations.Cycle;
 import java.util.List;
 import java.util.Map;
 
+import static ru.idrisov.universal_loader.utils.TableUtils.getTableAliasName;
 import static ru.idrisov.universal_loader.utils.TableUtils.readTable;
 
 @Service
@@ -25,8 +26,8 @@ public class CycleDfCreator {
         Map<Integer, List<Column>> columnsForWhereBeforeJoin = columnsCreator.getColumnsForWhereCondition(cycle);
         Column columnForWhere = columnsCreator.getConditionColumnFromColumnsMap(columnsForWhereBeforeJoin);
         List<Column> columnsForSelect = columnsCreator.getColumnsForSelect(cycle);
-
-        Dataset<Row> result = readTable(sparkSession, cycle.sourceTableField().sourceTable())
+        String tableAliasName = getTableAliasName(cycle.sourceTableField().sourceTable());
+        Dataset<Row> result = readTable(sparkSession, cycle.sourceTableField().sourceTable()).alias(tableAliasName)
                 .where(columnForWhere)
                 .select(columnsForSelect.toArray(new Column[0]));
 

@@ -76,6 +76,8 @@ public class TestUtils {
             return DataTypes.LongType;
         } else if (typeField.equals(BigDecimal.class)) {
             return getDecimalType(declaredField);
+        } else if (typeField.equals(Boolean.class)) {
+            return DataTypes.BooleanType;
         }
 
         throw new RuntimeException("Нет такого типа");

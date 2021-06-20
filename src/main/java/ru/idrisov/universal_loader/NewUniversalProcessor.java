@@ -13,10 +13,15 @@ import static ru.idrisov.universal_loader.utils.TableUtils.saveAsTable;
 public class NewUniversalProcessor {
 
     final DataFrameBuilder dataFrameBuilder;
+    final CycleValuesHolder cycleValuesHolder;
 
     public void fillDfAndSaveToTable(TableSpark targetTable) {
-        Dataset<Row> targetDf = getFilledDf(targetTable);
-        saveAsTable(targetDf, targetTable);
+        cycleValuesHolder.init(targetTable.getClass());
+        do {
+            Dataset<Row> targetDf = getFilledDf(targetTable);
+            saveAsTable(targetDf, targetTable);
+            cycleValuesHolder.setNextCurrentCycleValue();
+        } while (cycleValuesHolder.nextValuesIsPresent());
     }
 
     public Dataset<Row> getFilledDf(TableSpark targetTable) {

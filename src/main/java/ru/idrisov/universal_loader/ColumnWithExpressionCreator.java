@@ -1,5 +1,6 @@
 package ru.idrisov.universal_loader;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.spark.sql.Column;
 import org.springframework.stereotype.Component;
 import ru.idrisov.universal_loader.annotations.Join;
@@ -15,7 +16,10 @@ import static org.apache.spark.sql.functions.expr;
 import static ru.idrisov.universal_loader.utils.TableUtils.getColumnName;
 
 @Component
+@RequiredArgsConstructor
 public class ColumnWithExpressionCreator {
+
+    private final CycleValuesHolder cycleValuesHolder;
 
     public Column getColumnWithExpressionFromWhereCondition(SourceTableField sourceTableFieldInfo, WhereCondition whereCondition) {
         if (rightValueIsEmpty(whereCondition)) {
@@ -64,9 +68,14 @@ public class ColumnWithExpressionCreator {
 //            rightValue = getColumnForColumnValue(whereCondition);
 //        }
 
+        if (!whereCondition.cycleRightValue().equals("")) {
+            return "'" + cycleValuesHolder.getValue(whereCondition.cycleRightValue()) + "'";
+        }
+
         if (whereCondition.arrayStringRightValue().length >= 1) {
             return String.join(",", Arrays.stream(whereCondition.arrayStringRightValue()).map(x -> "'" + x + "'").toArray(String[]::new));
         }
+
         throw new RuntimeException("Правое значение не обработано");
     }
 

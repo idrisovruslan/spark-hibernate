@@ -91,7 +91,7 @@ public class HubAcctTable implements TableSpark {
             conditions = {
             //TODO Добавить поддержку подстановки своих значений
             @WhereCondition(leftValueFunction = "substring(%s, 1, 3)", cycleRightValue = "MAIN", place = WherePlace.AFTER_JOIN),
-            @WhereCondition(leftValueFunction = "substring(%s, 1, 5)", cycleRightValue = "NOT_MAIN :)", place = WherePlace.AFTER_JOIN)
+            @WhereCondition(leftValueFunction = "substring(%s, 1, 5)", cycleRightValue = "NESTED", place = WherePlace.AFTER_JOIN)
     })
     String num;
 

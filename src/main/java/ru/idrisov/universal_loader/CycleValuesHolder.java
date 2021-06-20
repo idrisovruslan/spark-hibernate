@@ -1,5 +1,6 @@
 package ru.idrisov.universal_loader;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,13 +20,52 @@ public class CycleValuesHolder {
 
     private List<CycleValue> cycleValues;
 
-    @Getter
-    private List<Map<String, String>> allCycleValues;
+    private Map<String, String> currentCycleValue;
 
+    //На момент работы CycleDfCreator currentCycleValue = null т.к. CycleValuesHolder
+    // не проиницилизирован, но уже используеться.
+    //TODO Придумай получше.
+    private Map<String, String> tempCycleValueForCycleDfCreator;
+
+    //For tests
+    @Getter(value = AccessLevel.PACKAGE)
+    private List<Map<String, String>> allCycleValues;
 
     public void init(Class<? extends TableSpark> tableInfo) {
         cycleValues = cycleValuesCreator.getCycleValuesList(tableInfo);
+
+        if (cycleValues == null) {
+            return;
+        }
+
         allCycleValues = fillListWithAllCycleValues();
+        setNextCurrentCycleValue();
+    }
+
+    public void setNextCurrentCycleValue() {
+        if (allCycleValues.size() != 0) {
+            currentCycleValue = allCycleValues.remove(0);
+        }
+    }
+
+    public boolean nextValuesIsPresent() {
+        return allCycleValues.size() > 0;
+    }
+
+    public String getValue(String key) {
+        if (currentCycleValue.size() != 0) {
+            return currentCycleValue.get(key);
+        }
+        return tempCycleValueForCycleDfCreator.get(key);
+    }
+
+    public boolean currentCycleValueIsPresent() {
+        return currentCycleValue != null;
+    }
+
+    //TODO Придумай нормальное название БЛЕАТЬ!
+    public void put2TempCycleValueForCycleDfCreator(String cycleName, String cycleValue) {
+        tempCycleValueForCycleDfCreator.put(cycleName, cycleValue);
     }
 
     List<Map<String, String>> fillListWithAllCycleValues() {
@@ -35,7 +75,7 @@ public class CycleValuesHolder {
         for (CycleValue cycleValue : cycleValues) {
             while (true) {
                 try {
-                    result.add(getNextValues(cycleValue));
+                    result.add(getNextValuesFromCycleValue(cycleValue));
                 } catch (AllNestedCycleProcessedException e) {
                     break;
                 }
@@ -48,7 +88,7 @@ public class CycleValuesHolder {
     //TODO заменить <String, String> на объект(пока хз как, из за то го что по сути будет
     // дублироваться объект CycleValue только без ссылок, как вариант
     // создать объект и использовать его в CycleValue)
-    private Map<String, String> getNextValues(CycleValue mainCycleValue) throws AllNestedCycleProcessedException {
+    private Map<String, String> getNextValuesFromCycleValue(CycleValue mainCycleValue) throws AllNestedCycleProcessedException {
         Map<String, String> result = new HashMap<>();
         result.put(mainCycleValue.getMainCycleName(), mainCycleValue.getMainCycleValue());
         CycleValue cycleValue = mainCycleValue;

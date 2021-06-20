@@ -20,7 +20,8 @@ import static ru.idrisov.universal_loader.utils.TableUtils.mapToList;
 @RequiredArgsConstructor
 public class CycleValuesCreator {
 
-    CycleDfCreator cycleDfCreator;
+    private final CycleDfCreator cycleDfCreator;
+    private final CycleValuesHolder cycleValuesHolder;
 
     public List<CycleValue> getCycleValuesList(Class<? extends TableSpark> tableInfo) {
 
@@ -41,11 +42,12 @@ public class CycleValuesCreator {
         List<String> cycleNames = new ArrayList<>();
         List<String> nestedCycleNames = new ArrayList<>();
 
-        Arrays.stream(getCycles(tableInfo).value()).forEach(cycle -> {
+        Arrays.stream(getCyclesAnnotation(tableInfo).value()).forEach(cycle -> {
             cycleNames.add(cycle.cycleName());
             nestedCycleNames.add(cycle.nestedCycleName());
         });
 
+        //После удаления останеться только самый верхний(главный) цикл
         cycleNames.removeAll(nestedCycleNames);
 
         if (cycleNames.size() == 1) {
@@ -56,7 +58,7 @@ public class CycleValuesCreator {
     }
 
     private Cycle getCycleFromName(Class<? extends TableSpark> tableInfo, String mainCycleName) {
-        List<Cycle> resultList =  Arrays.stream(getCycles(tableInfo).value())
+        List<Cycle> resultList =  Arrays.stream(getCyclesAnnotation(tableInfo).value())
                 .filter(cycle -> cycle.cycleName().equals(mainCycleName))
                 .collect(Collectors.toList());
 
@@ -79,6 +81,7 @@ public class CycleValuesCreator {
             CycleValue cycleValue = new CycleValue(cycleName, cycleValueString);
 
             if (!cycle.nestedCycleName().equals("")) {
+                cycleValuesHolder.put2TempCycleValueForCycleDfCreator(cycleName, cycleValueString);
                 List<CycleValue> nestedCycleValues = getCycleValuesListWithRecursion(tableInfo, getNestedCycle(tableInfo, cycle));
                 cycleValue.setNestedCycleValue(nestedCycleValues);
             }
@@ -93,7 +96,7 @@ public class CycleValuesCreator {
         return getCycleFromName(tableInfo, nestedCycleName);
     }
 
-    private Cycles getCycles(Class<? extends TableSpark> tableInfo) {
+    private Cycles getCyclesAnnotation(Class<? extends TableSpark> tableInfo) {
         return tableInfo.getAnnotation(Cycles.class);
     }
 }

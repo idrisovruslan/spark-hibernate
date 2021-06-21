@@ -25,6 +25,10 @@ public class CycleValue {
         nestedCycleValue = null;
     }
 
+    public CycleValue getNestedCycleValueFromIndex(int index) {
+        return nestedCycleValue.get(index);
+    }
+
     public CycleValue getFirstNotProcessedNestedCycleValue() {
         checkAndSetProcessedFlag();
 

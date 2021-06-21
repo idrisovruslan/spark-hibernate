@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import ru.idrisov.universal_loader.annotations.Cycle;
 import ru.idrisov.universal_loader.annotations.Cycles;
 import ru.idrisov.universal_loader.entitys.TableSpark;
+import ru.idrisov.universal_loader.exceptions.EmptyCycleValuesListException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -75,6 +76,10 @@ public class CycleValuesCreator {
         Dataset<Row> cycleValuesDf = cycleDfCreator.getCycleDf(cycle);
         String columnName = "`" + getColumnName(cycle.sourceTableField().sourceTable(), cycle.sourceTableField().sourceFieldName()) + "`";
         List<String> cycleValuesList = mapToList(cycleValuesDf, columnName);
+
+        if (cycleValuesList.size() == 0 ) {
+            throw new EmptyCycleValuesListException("Нет ни одного значения");
+        }
 
         String cycleName = cycle.cycleName();
 
